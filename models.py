@@ -39,13 +39,13 @@ class Cart(db.Model):
     book_id=db.Column(db.Integer,db.ForeignKey('book.id'),nullable=False)
     quantity=db.Column(db.Integer,nullable=False)
 
-class Transaction(db.model):
+class Transaction(db.Model):
     id=db.Column(db.Integer,primary_key=True)
     user_id=db.Column(db.Integer,db.ForeignKey('user.id'),nullable=False)
-    datetime=db.Colmun(db.DateTime,nullable=False)
+    datetime=db.Column(db.DateTime,nullable=False)
     orders=db.relationship("Order",backref="transaction",lazy="True")
 
-class order(db.model):
+class order(db.Model):
     id=db.Column(db.Integer,primary_key=True)
     transaction_id=db.Column(db.Integer,db.ForeignKey('transaction.id'),nullable=False)
     book_id=db.Column(db.Integer,db.ForeignKey('book.id'),nullable=False)
