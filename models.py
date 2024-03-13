@@ -15,7 +15,7 @@ class Genre(db.Model):
     id=db.Column(db.Integer,primary_key=True)
     genrename=db.Column(db.String(32),unique=True)
     books=db.relationship('Book',backref='genres' ,lazy='True')#lazy here we use bz when i will acces then give it not everytime
-
+     
 class Book(db.Model):
     id=db.Column(db.Integer,primary_key=True)
     title=db.Column(db.String(100),nullable=False)
