@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Page - Library App</title>
+    <!-- Bootstrap CSS (CDN link) -->
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Custom CSS -->
+    <style>
+        body {
+            padding-top: 20px;
+            background-color: #850808;
+        }
+        .container {
+            background-color: #131313;
+            border-radius: 5px;
+            padding: 20px;
+            box-shadow: 0 0 10px rgba(214, 39, 39, 0.1);
+        }
+        h1 {
+            text-align: center;
+            color: #fcf6f6;
+        }
+        hr {
+            margin-top: 20px;
+            margin-bottom: 30px;
+            color: #fcf6f6;
+        }
+        .form-group {
+            margin-bottom: 20px;
+            color: #fcf6f6;
+        }
+        button[type="submit"] {
+            margin-right: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Admin Page - Library App</h1>
+        <hr>
+        <!-- Issue/Revoke Books -->
+        <div class="row">
+            <div class="col-md-6">
+                <h2>Issue/Revoke Books</h2>
+                <form action="/issue" method="POST">
+                    <div class="form-group">
+                        <label for="book">Select Book:</label>
+                        <select class="form-control" id="book" name="book">
+                            {% for book in books %}
+                            <option value="{{ book }}">{{ books[book]['title'] }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="user">Select User:</label>
+                        <select class="form-control" id="user" name="user">
+                            {% for user_id, user_name in users.items() %}
+                            <option value="{{ user_id }}">{{ user_name }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Issue Book</button>
+                    <button type="submit" formaction="/revoke" class="btn btn-danger">Revoke Access</button>
+                </form>
+            </div>
+            <!-- Other functionalities (Edit, Remove, Assign) -->
+            <!-- Add HTML forms for other functionalities as needed -->
+        </div>
+    </div>
+
+    <!-- Bootstrap JS -->
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.3/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+</html>
