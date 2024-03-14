@@ -65,55 +65,31 @@
         .form-group button:hover {
             background-color: #ea0f0f;
         }
-
-        .success-message {
-            text-align: center;
-            color: #4CAF50;
-        }
     </style>
 </head>
 
 <body>
-    <div class="register-container">
-        <h2>Register</h2>
-        <form class="register-form" onsubmit="return showSuccessMessage()">
-            <div class="form-group">
-                <label for="username">Username:</label>
-                <input type="text" id="username" name="username" required>
-            </div>
-            <div class="form-group">
-                <label for="name">Name:</label>
-                <input type="text" id="name" name="name">
-            </div>
-
-            <div class="form-group">
-                <label for="email">Email:</label>
-                <input type="email" id="email" name="email" required>
-            </div>
-
-            <div class="form-group">
-                <label for="password">Password:</label>
-                <input type="password" id="password" name="password" required>
-            </div>
-            
-            <div class="form-group">
-                <label for="password">Confirm Password:</label>
-                <input type="password" id="password" name="password" required>
-            </div>
-
-            <div class="form-group">
-                <button type="submit">Register</button>
-            </div>
-        </form>
-        <div class="success-message" id="successMessage" style="display: none;">Registered successfully!</div>
-    </div>
-
-    <script>
-        function showSuccessMessage() {
-            document.getElementById('successMessage').style.display = 'block';
-            return false; // Prevent form submission
-        }
-    </script>
+    <form action="" class="register-form" method="post">
+        <div class="form-group">
+            <label for="username">Username</label>
+            <input type="text" name="username" required class="form-control">
+        </div>
+        <div class="form-group">
+            <label for="password">Password</label>
+            <input type="password" name="password" required class="form-control">
+        </div>
+        <div class="form-group">
+            <label for="confirm_password">Confirm Password</label>
+            <input type="password" name="confirm_password" required class="form-control">
+        </div>
+        <div class="form-group">
+            <label for="name">Name</label>
+            <input type="text" name="name" class="form-control">
+        </div>
+        <div class="form-group">
+            <input type="submit" value="Register" class="form-control">
+        </div>
+    </form>
 </body>
 
 </html>
