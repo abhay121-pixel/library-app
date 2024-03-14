@@ -72,27 +72,19 @@
 
 <body>
     
-    <div class="login-container">
-        <h2>Login</h2>
-        <form class="login-form">
-            <div class="form-group">
-                <label for="username">Username:</label>
-                <input type="text" id="username" name="username" required>
-            </div>
-
-            <div class="form-group">
-                <label for="password">Password:</label>
-                <input type="password" id="password" name="password" required>
-            </div>
-
-            <div class="form-group">
-                <button type="submit">Login</button>
-            </div>
-        </form>
+    <form action="" class="form" method="post">
         <div class="form-group">
-            <button onclick="location.href='register.html'">New User? Register</button>
+            <label for="username" class="form-label">Username</label>
+            <input type="text" name="username" required class="form-control">
         </div>
-    </div>
+        <div class="form-group">
+            <label for="password" class="form-label">Password</label>
+            <input type="password" name="password" required class="form-control">
+        </div>
+        <div class="form-group">
+            <input type="submit" value="Login" class="btn btn-primary">
+        </div>
+    </form>
 </body>
 
 </html>
