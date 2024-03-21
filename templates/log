@@ -6,38 +6,15 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Register</title>
     <style>
-        /* Styling for the navbar */
-        .navbar {
-            background-color: #333;
-            overflow: hidden;
-            position: fixed;
-            top: 0;
-            width: 100%;
-        }
-
-        .navbar a {
-            float: left;
-            display: block;
-            color: #fff;
-            text-align: center;
-            padding: 14px 20px;
-            text-decoration: none;
-        }
-
-        .navbar a:hover {
-            background-color: #ea0f0f;
-        }
-
-        /* Original styling for the registration form */
         body {
             font-family: Arial, sans-serif;
-            margin-top: 60px; /* Adjusted top margin to accommodate the navbar */
+            margin: 0;
             padding: 0;
             background-color: #850808;
             display: flex;
             align-items: center;
             justify-content: center;
-            min-height: 100vh;
+            height: 100vh;
         }
 
         .register-container {
@@ -106,13 +83,6 @@
 </head>
 
 <body>
-    <!-- Navbar -->
-    <div class="navbar">
-        <a href="/">Library App</a>
-        <a href="/login">Login</a>
-        <a href="/register">Register</a>
-    </div>
-
     <div class="register-container">
         <h2>Register</h2>
         {% with messages = get_flashed_messages() %}

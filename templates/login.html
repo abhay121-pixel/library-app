@@ -6,17 +6,41 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login App</title>
     <style>
-        
         body {
-            
             font-family: Arial, sans-serif;
             margin: 0;
             padding: 0;
             background-color: #850808;
-            display: flex;
             align-items: center;
             justify-content: center;
-            height: 100vh;
+            min-height: 100vh;
+        }
+
+        nav {
+            background-color: #333;
+            padding: 14px 20px;
+        }
+
+        nav ul {
+            list-style-type: none;
+            margin: 0;
+            padding: 0;
+        }
+
+        nav ul li {
+            display: inline;
+            margin-right: 20px;
+        }
+
+        nav ul li a {
+            text-decoration: none;
+            color: #fff;
+            font-weight: bold;
+            transition: color 0.3s; /* Add transition for smooth color change */
+        }
+
+        nav ul li a:hover {
+            background-color: #ea0f0f; /* Change color on hover */
         }
 
         .login-container {
@@ -25,6 +49,7 @@
             border-radius: 8px;
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
             width: 300px;
+            margin: 20px auto;
         }
 
         .login-container h2 {
@@ -67,24 +92,47 @@
         .form-group button:hover {
             background-color: #ea0f0f;
         }
+
+        .error-message {
+            color: red;
+            text-align: center;
+        }
     </style>
 </head>
 
 <body>
-    
-    <form action="" class="form" method="post">
+    <nav>
+        <ul>
+            <li><a href="/">Library App</a></li>
+            <li><a href="/login">Login</a></li>
+            <li><a href="/register">Register</a></li>
+        </ul>
+    </nav>
+
+    <div class="login-container">
+        <h2>Login</h2>
+        {% if error %}
+            <p class="error-message">{{ error }}</p>
+        {% endif %}
+        <form action="" class="login-form" method="post">
+            <div class="form-group">
+                <label for="username">Username:</label>
+                <input type="text" id="username" name="username" required>
+            </div>
+
+            <div class="form-group">
+                <label for="password">Password:</label>
+                <input type="password" id="password" name="password" required>
+            </div>
+
+            <div class="form-group">
+                <button type="submit">Login</button>
+            </div>
+        </form>
         <div class="form-group">
-            <label for="username" class="form-label">Username</label>
-            <input type="text" name="username" required class="form-control">
+            <button onclick="window.location.href='register'">New User? Register</button>
         </div>
-        <div class="form-group">
-            <label for="password" class="form-label">Password</label>
-            <input type="password" name="password" required class="form-control">
-        </div>
-        <div class="form-group">
-            <input type="submit" value="Login" class="btn btn-primary">
-        </div>
-    </form>
+    </div>
 </body>
 
 </html>

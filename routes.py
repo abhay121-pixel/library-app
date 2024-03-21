@@ -1,11 +1,15 @@
-from flask import render_template, request, url_for, flash, redirect
+from flask import render_template, request, url_for, flash, redirect,session
 from app import app  # Assuming your Flask app instance is named 'app'
-from models import db
-from models import  User
-from werkzeug.security  import generate_password_hash, check_password_hash
+from models import db, User
+from werkzeug.security import generate_password_hash, check_password_hash
+from functools import wraps
 @app.route('/')
 def index():
-    return render_template('index.html')
+    if 'user_id' in  session:
+        return render_template('index.html')
+    else:
+        flash ("Please login first!", "danger")
+        return render_template('login.html')
 
 @app.route('/login')
 def login():
@@ -13,24 +17,25 @@ def login():
 
 @app.route('/login', methods=['POST'])
 def login_post():
-    username=request.form.get("username")
+    username = request.form.get("username")
     password = request.form.get('password')
 
-    if  not username or  not password:
-        error="Username and Password required"
-        return  render_template("login.html")
-    
-    user=User.query.filter_by(username=username).first()
+    if not username or not password:
+        error = "Username and Password required"
+        return render_template('login.html', error=error)
+
+    user = User.query.filter_by(username=username).first()
 
     if not user:
-        error="No such user found"
-        return  render_template("register.html")
-    if  not check_password_hash(user.passhash, password):
-        error="Invalid Password"
-        return  render_template("login.html")
-    return   render_template("index.html")
-
-
+        error = "No such user found"
+        return render_template("login.html", error=error)
+    
+    if not check_password_hash(user.passhash, password):
+        error = "Invalid Password"
+        return render_template("login.html", error=error)
+    session['user_id']=user.id
+    flash ("Logged In Successfully","success")
+    return render_template("index.html")
 
 @app.route('/register')
 def register():
@@ -42,20 +47,82 @@ def register_post():
     password = request.form.get('password')
     confirm_password = request.form.get('confirm_password')
     name = request.form.get('name')
+    
     if not all([username, password, confirm_password]):
         flash("Please fill out the form completely")
-        return redirect(url_for('register'))  # Import 'redirect' and 'url_for'
-    if  password != confirm_password:
+        return redirect(url_for('register'))
+
+    if password != confirm_password:
         flash("Passwords do not match")
         return redirect(url_for('register'))
     
-    user=User.query.filter_by(username=username).first()
+    user = User.query.filter_by(username=username).first()
     if user:   # A user with this username already exists
-        flash ("Username already taken")
+        flash("Username already taken")
         return redirect(url_for('register'))
     
-    passhash=generate_password_hash(password)
+    passhash = generate_password_hash(password)
     new_user = User(username=username, passhash=passhash, name=name)
     db.session.add(new_user)      # Adds a new user to the database session
-    db.session.commit()           # MAKE CHANGE IN DATA FILE
-    return  redirect(url_for('login'))
+    db.session.commit()           # Commit the changes to the database
+    
+    flash("Registration successful. Please log in.")
+    return redirect(url_for('login'))
+
+#------
+'''def auth_reuired(func):
+    @wraps(func)
+    def wrapper(*args, **kwargs):
+        if 'user_id' not in session:
+            return func(*args, **kwargs)
+        else:
+            flash('Please log in to continue')
+            return redirect(url_for('login'))
+    return  wrapper'''
+
+@app.route('/profile', methods=["GET"])
+def profile():
+    if 'user_id' in session:
+        user = User.query.get(session['user_id'])
+        if user:
+            return render_template('profile.html', user=user)
+        else:
+            flash("User not found", "danger")
+            return redirect(url_for('login'))
+    else: 
+        flash("Please login first!", "danger")
+        return redirect(url_for('login'))
+@app.route('/profile',methods=["POST"])
+def profile_post():
+    username=request.form.get("username")
+    cpassword=request.form.get("cpassword")
+    password=request.form.get("password")
+    name=request.form.get("name")
+
+    if not  username or not cpassword or not password:
+        flash("Missing fields", "warning")
+        return redirect(url_for('profile'))
+    
+    user=User.query.get(session['user_id'])
+    if not check_password_hash (user.passhash,cpassword):
+        flash ("Password is incorrect","danger")
+        return redirect(url_for('profile'))
+    
+    if username != user.username :
+        new_username=User.query.filter_by(username=username).first()
+        if new_username:
+            flash("Username already exists","danger")
+            return  redirect(url_for('profile'))
+    new_password_hash=generate_password_hash(password)
+    user.username=username
+    user.passhash=new_password_hash
+    user.username=name
+    db.session.commit()
+    flash('Profile updated successfully','success')
+    return  redirect(url_for('profile'))
+
+@app.route('/logout')
+def logout():
+    session.pop('user_id', None)       # Removes the 'user_id' key from the session dictionary
+    flash("You have been logged out.", "info")
+    return redirect(url_for('login'))

@@ -1,6 +1,7 @@
 from  app import app
 from flask_sqlalchemy import  SQLAlchemy
 from sqlalchemy.orm import backref
+from  werkzeug.security import generate_password_hash,check_password_hash
 
 
 
@@ -26,7 +27,7 @@ class Book(db.Model):
     genre_id=db.Column(db.Integer,db.ForeignKey("genre.id"),nullable=False)
     #publisher=db.Column(db.String(30))
     pubdate=db.Column(db.Date,nullable=False)
-    feedback=db.relationship("Feedback", backref="books_feedback_relationship",lazy=True)
+    #feedback=db.relationship("Feedback", backref="books_feedback_relationship",lazy=True)
     #bookcover=db.Column(db.LargeBinary)
     #summary=db.Column(db.Text)
     #pagecount=db.Column(db.Integer)
@@ -36,14 +37,15 @@ class Book(db.Model):
     #user_id=db.Column(db.Integer,db.ForeignKey('user.id'),nullable=False)
     carts=db.relationship("Cart",backref='book',lazy='dynamic')
     orders=db.relationship("Order",backref='book',lazy='dynamic')
+    #feedback = db.relationship("Feedback", back_populates="book", overlaps="books_feedback_relationship")
 
 class Feedback(db.Model):
     id=db.Column(db.Integer,primary_key=True)
     book_id=db.Column(db.Integer,db.ForeignKey('book.id'),nullable=False)
     text=db.Column(db.Text,nullable=False)
     rating=db.Column(db.SmallInteger,nullable=False)
-    feed_book=db.relationship("Book",uselist=False,backref='book_feedback_relationship',lazy=True)
-
+    feed_book=db.relationship("Book",backref='book_feedback_relationship',lazy=True)
+    #book = db.relationship("Book", back_populates="feedback", overlaps="books_feedback_relationship")
 class Cart(db.Model):
     id=db.Column(db.Integer,primary_key=True)
     user_id=db.Column(db.Integer,db.ForeignKey('user.id'),nullable=False)
@@ -68,3 +70,10 @@ class Order(db.Model):
 
 with app.app_context():
     db.create_all()
+    #if admin exists,else create admin
+    admin=User.query.filter_by(is_admin=True).first()
+    if  not admin:
+       passhash=generate_password_hash('admin')
+       admin=User(username='admin',passhash=passhash,name='Admin', is_admin=True)
+       db.session.add(admin)
+       db.session.commit()

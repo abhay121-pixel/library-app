@@ -1,4 +1,4 @@
-from flask import Flask, render_template
+from flask import Flask, render_template,session
 app=Flask( __name__)
 
 import config
@@ -7,4 +7,3 @@ import routes
 
 if __name__=='__main__':
     app.run(debug=True) 
-    
