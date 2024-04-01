@@ -35,7 +35,7 @@ def login_post():
         return render_template("login.html", error=error)
     session['user_id']=user.id
     flash ("Logged In Successfully","success")
-    return render_template("index.html")
+    return redirect(url_for('profile'))
 
 @app.route('/register')
 def register():
@@ -70,7 +70,7 @@ def register_post():
     return redirect(url_for('login'))
 
 #------
-'''def auth_reuired(func):
+'''def auth_required(func):
     @wraps(func)
     def wrapper(*args, **kwargs):
         if 'user_id' not in session:
@@ -126,3 +126,29 @@ def logout():
     session.pop('user_id', None)       # Removes the 'user_id' key from the session dictionary
     flash("You have been logged out.", "info")
     return redirect(url_for('login'))
+ # admin pages
+@app.route('/admin')
+def admin():
+    if 'user_id' in session:
+        user = User.query.get(session['user_id'])
+        if user and user.is_admin:
+            return render_template('admin.html')
+        else:
+            flash("Access denied: You must be an admin to view this page.", "danger")
+            return redirect(url_for('profile'))
+    else:
+        flash("Please login first!", "danger")
+        return redirect(url_for('login'))
+
+@app.route('/genre/add')
+def  add_genre():
+    return "add_genre"
+@app.route('/genre/<int:id>/')
+def show_genre(id):
+    return "show_genre"
+@app.route('/genre/<int:id>/edit')
+def edit_genre(id):
+    return "edit_genre"
+@app.route('/genre/<int:id>/delete')
+def delete_genre(id):
+    return "delete_genre"

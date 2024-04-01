@@ -1,0 +1,7 @@
+@app.route('/')
+@auth_required
+def index():
+    user=User.query.get(session['user_id'])
+    if user is admin:
+        return redirect (url_for('admin'))
+    return  render_template ('index.html')

@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Dashboard</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+</head>
+<body>
+    <!-- Navigation Bar -->
+    {% include 'navbar.html' %}
+    
+    <div class="container mt-4">
+        <!-- User Dashboard Heading -->
+        <h2>Welcome, {{ user.name }}!</h2>
+
+        <!-- Section and eBooks Display -->
+        <div class="mt-4">
+            <h3>Available Sections and eBooks</h3>
+            <div>
+                <!-- Loop through sections and books using Jinja2 -->
+                {% for section in sections %}
+                    <div class="card mt-2">
+                        <div class="card-body">
+                            <h5 class="card-title">{{ section.name }}</h5>
+                            <p class="card-text">{{ section.description }}</p>
+                            <h6>eBooks:</h6>
+                            <ul>
+                                {% for book in section.books %}
+                                    <li>{{ book.name }} by {{ book.author }} - <button class="btn btn-primary btn-sm">Request Access</button></li>
+                                {% endfor %}
+                            </ul>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+
+        <!-- Request/Return Books -->
+        <div class="mt-4">
+            <h3>Manage Your Books</h3>
+            <!-- Book Request/Return Form -->
+            <!-- Assuming 'books' is a list of books the user has requested or can return -->
+            <form method="post" action="{{ url_for('handle_books') }}">
+                <div class="form-group">
+                    <label for="bookSelect">Select Book:</label>
+                    <select class="form-control" id="bookSelect" name="book_id">
+                        {% for book in books %}
+                            <option value="{{ book.id }}">{{ book.name }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <button type="submit" class="btn btn-success">Request Book</button>
+                <button type="submit" class="btn btn-danger">Return Book</button>
+            </form>
+        </div>
+
+        <!-- Feedback Section -->
+        <div class="mt-4">
+            <h3>Feedback for eBooks</h3>
+            <form method="post" action="{{ url_for('submit_feedback') }}">
+                <div class="form-group">
+                    <label for="feedbackBookSelect">Select Book:</label>
+                    <select class="form-control" id="feedbackBookSelect" name="feedback_book_id">
+                        {% for book in books %}
+                            <option value="{{ book.id }}">{{ book.name }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="feedbackTextarea">Your Feedback:</label>
+                    <textarea class="form-control" id="feedbackTextarea" rows="3" name="feedback"></textarea>
+                </div>
+                <button type="submit" class="btn btn-primary">Submit Feedback</button>
+            </form>
+        </div>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.9/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+</html>
