@@ -4,192 +4,37 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>User Profile</title>
-    <style>
-        /* Styling for the layout */
-        body {
-            font-family: Arial, sans-serif;
-            margin: 0;
-            padding: 0;
-            background-color: #850808;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            min-height: 100vh;
-        }
-
-        .container {
-            width: 100%;
-            max-width: 800px;
-            padding: 20px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .left-content {
-            flex-grow: 2;
-        }
-
-        .right-content {
-            text-align: right;
-        }
-
-        /* Styling for the form */
-        .form {
-            background-color: #131313;
-            padding: 20px;
-            border-radius: 8px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-            width: 300px;
-        }
-
-        .form h1 {
-            color: #fff;
-            text-align: center;
-            margin-bottom: 20px;
-        }
-
-        .form-group {
-            margin-bottom: 15px;
-        }
-
-        .form-group label {
-            display: block;
-            margin-bottom: 5px;
-            color: #f5f1f1;
-        }
-
-        .form-group input {
-            width: 100%;
-            padding: 10px;
-            border: 1px solid #ccc;
-            border-radius: 4px;
-            box-sizing: border-box;
-        }
-
-        .btn {
-            width: 100%;
-            padding: 10px;
-            background-color: #333;
-            color: #fff;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-            text-align: center;
-            display: inline-block;
-            text-decoration: none;
-        }
-
-        .btn-primary {
-            background-color: #333;
-        }
-
-        .btn-primary:hover {
-            background-color: #ea0f0f;
-        }
-
-        .btn-outline-danger {
-            background-color: transparent;
-            border: 1px solid #ea0f0f;
-        }
-
-        .btn-outline-danger:hover {
-            background-color: #ea0f0f;
-            color: #fff;
-        }
-        /* Styling for flash messages */
-        .flash-messages {
-            margin-top: 20px;
-            padding: 10px;
-            border-radius: 10px;
-            text-align: center;
-}
-
-        .flash-messages ul {
-            list-style:   none;
-            font-size:     95%;
-            line-height:   95%;
-            color:         #817e6c;
-            max-width:    600px;
-            margin:        auto;
-            padding: 0;
-}
-
-        .flash-messages li {
-            margin-bottom: 5px;
-            padding: 10px;
-            border-radius: 4px;
-}
-
-/* Different styles for different message types */
-        .flash-success {
-            background-color: #32CD32; /* Green */
-            color: #fff;
-}
-
-        .flash-info {
-            background-color: #6495ED; /* Cornflower Blue */
-            color: #fff;
-}
-
-        .flash-warning {
-            background-color: #FFA500; /* Orange */
-            color: #fff;
-}
-
-        .flash-danger {
-            background-color: #DC143C; /* Crimson */
-            color: #fff;
-}
-    </style>
+    <title>Dashboard</title>
 </head>
 
 <body>
-    <div class="container">
-        <div class="left-content">
-            <h1>Hello {{ user.name }}</h1>
-        </div>
-        <div class="right-content">
-            <a href="{{ url_for('logout') }}" class="btn btn-outline-danger">Logout</a>
-        </div>
-    </div>
-
-    <!-- Flash messages section -->
-    <div class="flash-messages">
-        {% with messages = get_flashed_messages() %}
-            {% if messages %}
-                <ul>
-                    {% for message in messages %}
-                        <li>{{ message }}</li>
-                    {% endfor %}
-                </ul>
-            {% endif %}
-        {% endwith %}
-    </div>
-
-    <div class="form">
-        <form action="" method="post" class="form">
-            <div class="form-group">
-                <label for="username">Username:</label>
-                <input type="text" name="username" id="username" class="form-control" required>
-            </div>
-            <div class="form-group">
-                <label for="cpassword" class="form-label"> Current Password:</label>
-                <input type="password" name="cpassword" id="cpassword" class="form-control" required>
-            </div>
-            <div class="form-group">
-                <label for="password" class="form-label"> New Password:</label>
-                <input type="password" name="password" id="password" class="form-control" required>
-            </div>
-            <div class="form-group">
-                <label for="name" class="form-label">Name</label>
-                <input type="text" name="name" id="name" class="form-control">
-            </div>
-            <button type="submit" class="btn btn-primary">Update</button>
-        </form>
-    </div>
+    <h1 class="display-1">Admin Dashboard</h1>
+    <!-- Updated anchor tag with inline styles -->
+    <a href="{{ url_for('add_genre') }}"
+        style="border: 2px solid #000; background-color: #4CAF50; color: white; padding: 10px 24px; text-align: center; text-decoration: none; display: inline-block; font-size: 16px;">+Add</a>
+    <h2 class="display-2">Genres:</h2>
+    <table>
+        <thead>
+            <tr>
+                <th>Genre ID</th>
+                <th>Genre Name</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for genre in genres %}
+            <tr>
+                <td>{{ genre.id }}</td>
+                <td>{{ genre.name }}</td>
+                <td>
+                    <a href="{{url_for('show_genre',id=genre.id)}}}" class="btn btn-primary">Show</a>
+                    <a href="{{url_for('edit_genre',id=genre.id)}}}" class="btn btn-primary">Edit</a>
+                    <a href="{{url_for('delete_genre',id=genre.id)}}}" class="btn btn-primary">Delete</a>
+                </td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
 </body>
 
 </html>

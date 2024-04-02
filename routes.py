@@ -1,6 +1,6 @@
 from flask import render_template, request, url_for, flash, redirect,session
 from app import app  # Assuming your Flask app instance is named 'app'
-from models import db, User
+from models import db, User,Genre
 from werkzeug.security import generate_password_hash, check_password_hash
 from functools import wraps
 @app.route('/')
@@ -142,13 +142,30 @@ def admin():
 
 @app.route('/genre/add')
 def  add_genre():
-    return "add_genre"
+    return  render_template('genre/add.html')
+
+@app.route('/genre/add', methods=["POST"])
+def  add_genre_post():
+    name=request.form['name']
+    if not name:
+        flash('Please fill out all fields')
+        return  redirect(url_for('add_genre'))
+    genre=Genre(genrename=name)
+    db.session.add(genre)
+    db.session.commit()
+    flash('New Genre added Successfully','success')
+    return  redirect(url_for('admin'))
+
+
+
 @app.route('/genre/<int:id>/')
 def show_genre(id):
     return "show_genre"
+
 @app.route('/genre/<int:id>/edit')
 def edit_genre(id):
     return "edit_genre"
+
 @app.route('/genre/<int:id>/delete')
 def delete_genre(id):
     return "delete_genre"
