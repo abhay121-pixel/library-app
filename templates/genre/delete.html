@@ -3,16 +3,18 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Add Genre</title>
+    <title>Delete Genre</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css">
-    <h1 style="text-align: center;">Add a new genre:</h1>
     <style>
-    
         body {
             margin: 0;
             font-family: Arial, sans-serif;
-            padding-top: 60px; /* Added padding to avoid overlap with the fixed navbar */
+            padding-top: 60px; /* Adjust if navbar height changes */
             background-color: #850808;    
+            display: flex;
+            flex-direction: column;
+            align-items: center; /* Centers the content */
+            text-align: center; /* Centers text */
         }
 
         .navbar {
@@ -37,41 +39,40 @@
             color: black;
         }
 
-        /* Additional styles for the form if needed */
         .form {
             display: flex;
             flex-direction: column;
-            width: 300px; /* Adjust width as needed */
-            margin: 0 auto; /* Center the form in the page */
+            width: 100%; /* Full width */
+            align-items: center; /* Center align the form items */
         }
 
         .form-group {
+            margin: 20px;
+        }
+
+        .form-label, .f-3 {
             margin-bottom: 15px;
+            font-size: 1.2em;
         }
 
-        .form-label {
-            margin-bottom: 5px;
-            display: block;
+        .genre-name {
+            font-weight: bold;
+            font-size: 1.5em; /* Makes the genre name larger */
+            color: #fff;
         }
 
-        .form-control {
-            padding: 10px;
-            font-size: 16px;
-            width: 100%;
-            margin-bottom: 10px;
-        }
-
-        .btn-success {
-            padding: 10px 15px;
-            background-color: #1e1f1e;
+        .btn-danger {
+            padding: 10px 20px;
+            background-color: #212020;
             color: white;
             border: none;
             cursor: pointer;
             font-size: 16px;
+            border-radius: 5px; /* Rounded corners */
         }
 
-        .btn-success:hover {
-            background-color: #218838;
+        .btn-danger:hover {
+            background-color: #c9302c;
         }
     </style>
 </head>
@@ -81,18 +82,11 @@
         <a href="{{ url_for('index') }}">Home</a>
         <a href="{{ url_for('profile') }}">Profile</a>
     </div>
-
+    <h1>Delete Genre:</h1> <!-- Moved and centered -->
+    <p class="f-3">Are you sure you want to delete this <span class="genre-name">{{ genre.genrename }}</span>?</p>
     <form action="" method="post" class="form">
         <div class="form-group">
-            <label for="name" class="form-label">Genre Name: </label>
-            <input type="text"
-            name="name"
-            id="name"
-            class="form-control"
-            required>
-        </div>
-        <div class="form-group">
-            <button type="submit" class="btn btn-success">Add</button>
+            <button type="submit" class="btn btn-danger">Delete</button>
         </div>
     </form>
 </body>

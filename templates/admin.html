@@ -5,7 +5,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dashboard</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css">
     <style>
+        
+        
         body {
             margin: 0;
             font-family: Arial, sans-serif;
@@ -55,12 +58,25 @@
         th, td {
             text-align: left;
             padding: 8px;
-            border-bottom: 1px solid #ddd;
+            border-bottom: 1px solid #100f0f;
         }
 
         th {
-            background-color: #111111;
-            color: white;
+            background-color: #0b0b0b;
+            color: rgb(244, 235, 235);
+        }
+        tr:nth-child(even) {
+            background-color: #1a1919; /* Even rows color */
+        }
+
+        tr:nth-child(odd) {
+            background-color: #da1a1a; /* Odd rows color */
+        }
+        
+        /* Color inside table cells */
+        td {
+            background-color: #d9d9d3; /* Light grey color for table cells */
+            color: #171616; /* Dark grey text color */
         }
     </style>
 </head>
@@ -88,15 +104,16 @@
                 {% for genre in genres %}
                 <tr>
                     <td>{{ genre.id }}</td>
-                    <td>{{ genre.name }}</td>
+                    <td>{{ genre.genrename }}</td>
                     <td>
-                        <a href="{{ url_for('show_genre', id=genre.id) }}">Show</a>
-                        <a href="{{ url_for('edit_genre', id=genre.id) }}">Edit</a>
-                        <a href="{{ url_for('delete_genre', id=genre.id) }}">Delete</a>
+                        <a href="{{ url_for('show_genre', id=genre.id) }}"><i class="fas fa-eye"></i>Search</a>
+                        <a href="{{ url_for('edit_genre', id=genre.id) }}"><i class="fas fa-pencil-alt"></i>Edit</a>
+                        <a href="{{ url_for('delete_genre', id=genre.id) }}"><i class="fas fa-trash-restore">Delete</i></a>
                     </td>
                 </tr>
                 {% endfor %}
             </tbody>
+            
         </table>
     </div>
 </body>
