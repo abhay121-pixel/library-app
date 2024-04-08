@@ -163,8 +163,11 @@ def show_genre(id):
     if not is_admin():
         flash("Access denied: You must be an admin to view this page.");
         return redirect(url_for('profile'));
-    return "show_genre"
-
+    genre = Genre.query.filter_by(id=id).first()
+    if not genre :
+        flash('This genre does not exist ')
+        return redirect(url_for('admin'))
+    return  render_template('show.html',genre=genre)
 @app.route('/genre/<int:id>/edit')
 def edit_genre(id):
     if not is_admin():

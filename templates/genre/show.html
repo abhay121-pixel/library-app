@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dashboard</title>
+    <title>Books</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css">
     <style>
         
@@ -89,29 +89,29 @@
     </div>
 
     <div class="main-content">
-        <h1>Admin Dashboard</h1>
-        <a href="{{ url_for('add_genre') }}" style="border: 2px solid #f3ecec; background-color: #070707; color: white; padding: 10px 24px; text-align: center; text-decoration: none; display: inline-block; font-size: 16px;">+ Add Genre</a>
-        <h2>Genres:</h2>
+        <h1> Books of {{genre.genrename}} Genre</h1>
+        <!--<a href="{{ url_for('add_genre') }}" style="border: 2px solid #f3ecec; background-color: #070707; color: white; padding: 10px 24px; text-align: center; text-decoration: none; display: inline-block; font-size: 16px;">+ Add Genre</a>-->
+        <h2>Books:</h2>
         <table>
             <thead>
                 <tr>
-                    <th>Genre ID</th>
-                    <th>Genre Name</th>
-                    <th>Number of Books in Genre</th>
-                    <th>Actions</th>
+                    <th>Book ID</th>
+                    <th>Book Title</th>
+                    <th>Author name</th>
+                    <th>Price</th>
+                    <th>Published Date</th>
+                    <th>Action</th>
                 </tr>
             </thead>
             <tbody>
-                {% for genre in genres %}
+                {% for books in genre.books %}
                 <tr>
-                    <td>{{ genre.id }}</td>
-                    <td>{{ genre.genrename }}</td>
-                    <td>{{genre.name|length}}</td>
-                    <td>
-                        <a href="{{ url_for('show_genre', id=genre.id) }}"><i class="fas fa-eye"></i>Show</a>
-                        <a href="{{ url_for('edit_genre', id=genre.id) }}"><i class="fas fa-pencil-alt"></i>Edit</a>
-                        <a href="{{ url_for('delete_genre', id=genre.id) }}"><i class="fas fa-times-circle">Delete</i></a>
-                    </td>
+                    <td>{{ book.id }}</td>
+                    <td>{{ book.title }}</td>
+                    <td>{{book.author}}</td>
+                    <td>{{book.price}}</td>
+                    <td>{{book.pubdate}}</td>
+                    
                 </tr>
                 {% endfor %}
             </tbody>
