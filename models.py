@@ -17,7 +17,7 @@ class User(db.Model):
 class Genre(db.Model):
     id=db.Column(db.Integer,primary_key=True)
     genrename=db.Column(db.String(32),unique=True)
-    books=db.relationship('Book',backref='genre' ,lazy='dynamic')#lazy here we use bz when i will acces then give it not everytime
+    books=db.relationship('Book',backref='genre' ,lazy='select')#lazy here we use bz when i will acces then give it not everytime
      
 class Book(db.Model):
     id=db.Column(db.Integer,primary_key=True)
