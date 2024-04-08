@@ -167,7 +167,8 @@ def show_genre(id):
     if not genre :
         flash('This genre does not exist ')
         return redirect(url_for('admin'))
-    return  render_template('show.html',genre=genre)
+    return  render_template('genre/show.html',genre=genre)
+
 @app.route('/genre/<int:id>/edit')
 def edit_genre(id):
     if not is_admin():
@@ -179,6 +180,8 @@ def edit_genre(id):
         return  redirect ( url_for('admin') )
     return render_template('genre/edit.html',genre=genre)
     #return render_template ('genre/edit.html')
+
+
 @app.route('/genre/<int:id>/edit',methods = ['POST'])
 def edit_genre_post(id):
     if not is_admin():
@@ -209,6 +212,9 @@ def delete_genre(id):
         flash   ("Error: Genre doesn't exists")
         return   redirect(url_for("admin"))
     return render_template ('genre/delete.html', genre=genre)
+
+
+
 @app.route('/genre/<int:id>/delete',methods=["POST"])
 def delete_genre_post(id):
     if not is_admin():
