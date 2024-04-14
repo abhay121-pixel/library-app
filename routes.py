@@ -18,7 +18,7 @@ def is_admin():
 @app.route('/')
 def index():
     if 'user_id' in  session:
-        return render_template('index.html')
+        return redirect(url_for('profile'))
     else:
         flash ("Please login first!", "danger")
         return render_template('login.html')
@@ -245,7 +245,7 @@ def  add_book(genre_id):
     if  not genre:
         flash( "Error: The selected genre does not exist.")
         return redirect( url_for('admin'))
-    return render_template('genre/books/add.html',genre=genre,genres=genres)
+    return render_template('books/add.html',genre=genre,genres=genres)
 
 
     
@@ -286,7 +286,7 @@ def  add_book_post():
 @app.route('/book/<int:id>/update')
 def edit_book(id):
     book = Book.query.get_or_404(id)
-    return render_template('genre/books/updatebook.html', book=book)
+    return render_template('books/updatebook.html', book=book)
 
 @app.route('/book/<int:id>/update', methods=['POST'])
 def update_book(id):
@@ -305,7 +305,7 @@ def update_book(id):
             flash('Error updating book.', 'danger')
 
         return redirect(url_for('update_book', id=id))
-    return render_template('genre/books/show.html', book=book)
+    return render_template('books/show.html', book=book)
 
 
 
@@ -318,7 +318,7 @@ def delete_book(id):
     if not  book:
         flash   ("Error: Genre doesn't exists")
         return   redirect(url_for("admin"))
-    return render_template ('genre/books/deletebook.html', book=book)
+    return render_template ('books/deletebook.html', book=book)
 
 
 @app.route('/book/delete/<int:id>', methods=['POST'])

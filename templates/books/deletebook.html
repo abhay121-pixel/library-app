@@ -82,6 +82,15 @@
         <a href="{{ url_for('index') }}">Home</a>
         <a href="{{ url_for('profile') }}">Profile</a>
     </div>
+    {% with messages = get_flashed_messages() %}
+        {% if messages %}
+            <ul class="flashes">
+            {% for message in messages %}
+                <li>{{ message }}</li>
+            {% endfor %}
+            </ul>
+        {% endif %}
+    {% endwith %}
     <h1>Delete book:</h1>
     <p class="f-3">Are you sure you want to delete this <span class="book-name">{{ book.Bookname }}</span>?</p>
     <form action="{{ url_for('delete_book_post', id=book.id) }}" method="post">
