@@ -23,6 +23,7 @@ class Book(db.Model):
     id=db.Column(db.Integer,primary_key=True)
     title=db.Column(db.String(100),nullable=False)
     author=db.Column(db.String(30))
+    #booksnum=db.Column(db.BigInteger,nullable=False)
     price=db.Column(db.Float,nullable=False)
     genre_id=db.Column(db.Integer,db.ForeignKey("genre.id"),nullable=False)
     #publisher=db.Column(db.String(30))

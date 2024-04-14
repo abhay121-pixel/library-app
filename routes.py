@@ -1,8 +1,12 @@
 from flask import render_template, request, url_for, flash, redirect,session
 from app import app  # Assuming your Flask app instance is named 'app'
-from models import db, User,Genre,Cart,Order,Transaction
+from models import db, User,Genre,Cart,Order,Transaction,Book
 from werkzeug.security import generate_password_hash, check_password_hash
 from functools import wraps
+from datetime  import datetime
+
+
+
 def is_admin():
     user_id = session.get('user_id')
     if user_id:
@@ -228,3 +232,108 @@ def delete_genre_post(id):
     db.session.commit()
     flash   ("Successfully deleted!")
     return   redirect(url_for("admin"))
+
+
+
+@app.route('/book/add/<int:genre_id>')
+def  add_book(genre_id):
+    if not is_admin():
+        flash('Access denied: You must be an admin to view this page.')
+        return redirect(url_for('profile'))
+    genres=Genre.query.all()
+    genre=Genre.query.get(genre_id)
+    if  not genre:
+        flash( "Error: The selected genre does not exist.")
+        return redirect( url_for('admin'))
+    return render_template('genre/books/add.html',genre=genre,genres=genres)
+
+
+    
+@app.route('/book/add/', methods=["POST"])
+def  add_book_post():
+    if not is_admin():
+        flash("Access denied: You must be an admin to view this page.");
+        return redirect(url_for('profile'));
+    title=request.form.get('title')
+    price=request.form.get('price')
+    author=request.form.get('author')
+    genre_id=request.form.get('genre_id')
+    pubdate= request.form.get('pubdate')
+    try:
+        price = float(price)  # Convert price to float
+        pubdate = datetime.strptime(pubdate, '%Y-%m-%d')  # Convert string to datetime
+    except ValueError:
+        flash("Invalid input for price or publication date.")
+        return redirect(url_for('add_book', genre_id=genre_id))
+    genre=Genre.query.get(genre_id)
+    if not  genre :
+        flash("Genre does not exist")
+        return redirect(url_for('admin'))
+
+    if not title or  not price or not  author or not pubdate:
+        flash('Please fill out all fields')
+        return redirect(url_for('add_book', genre_id = genre_id))
+    
+    book=Book(title=title,price=price,author=author,genre=genre,pubdate=pubdate)
+    db.session.add(book)
+    db.session.commit()
+    flash ('Book added!','success')
+    return redirect(url_for('admin'))
+    #return redirect (url_for('show_genre', genre_id=genre.id))
+
+
+
+@app.route('/book/<int:id>/update')
+def edit_book(id):
+    book = Book.query.get_or_404(id)
+    return render_template('genre/books/updatebook.html', book=book)
+
+@app.route('/book/<int:id>/update', methods=['POST'])
+def update_book(id):
+    book = Book.query.get_or_404(id)
+    if request.method == 'POST':
+        book.title = request.form['title']
+        book.author = request.form['author']
+        book.price = float(request.form['price'])
+        book.pubdate = datetime.strptime(request.form['pubdate'], '%Y-%m-%d')
+
+        try:
+            db.session.commit()
+            flash('Book successfully updated.', 'success')
+        except:
+            db.session.rollback()
+            flash('Error updating book.', 'danger')
+
+        return redirect(url_for('update_book', id=id))
+    return render_template('genre/books/show.html', book=book)
+
+
+
+@app.route('/book/<int:id>/delete')
+def delete_book(id):
+    if not is_admin():
+        flash("Access denied: You must be an admin to view this page.', 'danger'");
+        return redirect(url_for('profile'));
+    book=Book.query.get(id)
+    if not  book:
+        flash   ("Error: Genre doesn't exists")
+        return   redirect(url_for("admin"))
+    return render_template ('genre/books/deletebook.html', book=book)
+
+
+@app.route('/book/delete/<int:id>', methods=['POST'])
+def delete_book_post(id):
+    if not is_admin():
+        flash("Access denied: You must be an admin to perform this action.")
+        return redirect(url_for('profile'))
+
+    book = Book.query.get(id)
+    if not book:
+        flash('Error: Book doesn\'t exists.', 'danger')
+        return redirect(url_for('profile'))
+    db.session.delete(book)
+    db.session.commit()
+    flash('Book successfully deleted.', 'success')
+    return redirect(url_for('admin'))
+
+

@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edit Book</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css">
+    <h1 style="text-align: center;">Update Book:</h1>
+    <style>
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            padding-top: 60px; /* Added padding to avoid overlap with the fixed navbar */
+            background-color: #850808;
+        }
+
+        .navbar {
+            background-color: #333;
+            overflow: hidden;
+            position: fixed;
+            top: 0;
+            width: 100%;
+        }
+
+        .navbar a {
+            float: left;
+            display: block;
+            color: #fff;
+            text-align: center;
+            padding: 14px 20px;
+            text-decoration: none;
+        }
+
+        .navbar a:hover {
+            background-color: #e21f1f;
+            color: black;
+        }
+
+        /* Additional styles for the form if needed */
+        .form {
+            display: flex;
+            flex-direction: column;
+            width: 300px; /* Adjust width as needed */
+            margin: 0 auto; /* Center the form in the page */
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        .form-label {
+            margin-bottom: 5px;
+            display: block;
+        }
+
+        .form-control {
+            padding: 10px;
+            font-size: 16px;
+            width: 100%;
+            margin-bottom: 10px;
+        }
+
+        .btn-success {
+            padding: 10px 15px;
+            background-color: #1e1f1e;
+            color: white;
+            border: none;
+            cursor: pointer;
+            font-size: 16px;
+        }
+
+        .btn-success:hover {
+            background-color: #218838;
+        }
+        .flashes {
+            list-style-type: none;
+            margin: 0;
+            padding: 0;
+        }
+
+        .flashes li {
+            margin-top: 10px;
+            color: #ff0; /* Change as needed */
+            background-color: #444; /* Dark background for the flash message */
+            padding: 10px;
+            border-radius: 5px; /* Rounded corners for flash messages */
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <div class="navbar">
+        <a href="{{ url_for('index') }}">Library App</a>
+        <a href="{{ url_for('index') }}">Home</a>
+        <a href="{{ url_for('profile') }}">Profile</a>
+    </div>
+    {% with messages = get_flashed_messages() %}
+        {% if messages %}
+            <ul class="flashes">
+            {% for message in messages %}
+                <li>{{ message }}</li>
+            {% endfor %}
+            </ul>
+        {% endif %}
+    {% endwith %}
+
+    <form action="{{ url_for('update_book', id=book.id) }}" method="post" class="form">
+        <div class="form-group">
+            <label for="title" class="form-label">Book Name: </label>
+            <input type="text" name="title" id="title" class="form-control" value="{{ book.title }}" required>
+        </div>
+        <div class="form-group">
+            <label for="author" class="form-label">Author Name: </label>
+            <input type="text" name="author" id="author" class="form-control" value="{{ book.author }}" required>
+        </div>
+        <div class="form-group">
+            <label for="price" class="form-label">Price: </label>
+            <input type="number" name="price" id="price" class="form-control" value="{{ book.price }}" required>
+        </div>
+        <div class="form-group">
+            <label for="pubdate" class="form-label">Published Date: </label>
+            <input type="date" name="pubdate" id="pubdate" class="form-control" value="{{ book.pubdate.strftime('%Y-%m-%d') }}" required>
+        </div>
+        <div class="form-group">
+            <button type="submit" class="btn btn-success">Update</button>
+        </div>
+    </form>
+</body>
+</html>

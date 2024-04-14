@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Delete Book</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css">
+    <style>
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            padding-top: 60px; /* Adjust if navbar height changes */
+            background-color: #850808;    
+            display: flex;
+            flex-direction: column;
+            align-items: center; /* Centers the content */
+            text-align: center; /* Centers text */
+        }
+
+        .navbar {
+            background-color: #333;
+            overflow: hidden;
+            position: fixed;
+            top: 0;
+            width: 100%;
+        }
+
+        .navbar a {
+            float: left;
+            display: block;
+            color: #fff;
+            text-align: center;
+            padding: 14px 20px;
+            text-decoration: none;
+        }
+
+        .navbar a:hover {
+            background-color: #e21f1f;
+            color: black;
+        }
+
+        .form {
+            display: flex;
+            flex-direction: column;
+            width: 100%; /* Full width */
+            align-items: center; /* Center align the form items */
+        }
+
+        .form-group {
+            margin: 20px;
+        }
+
+        .form-label, .f-3 {
+            margin-bottom: 15px;
+            font-size: 1.2em;
+        }
+
+        .genre-name {
+            font-weight: bold;
+            font-size: 1.5em; /* Makes the genre name larger */
+            color: #fff;
+        }
+
+        .btn-danger {
+            padding: 10px 20px;
+            background-color: #212020;
+            color: white;
+            border: none;
+            cursor: pointer;
+            font-size: 16px;
+            border-radius: 5px; /* Rounded corners */
+        }
+
+        .btn-danger:hover {
+            background-color: #c9302c;
+        }
+    </style>
+</head>
+<body>
+    <div class="navbar">
+        <a href="{{ url_for('index') }}">Library App</a>
+        <a href="{{ url_for('index') }}">Home</a>
+        <a href="{{ url_for('profile') }}">Profile</a>
+    </div>
+    <h1>Delete book:</h1>
+    <p class="f-3">Are you sure you want to delete this <span class="book-name">{{ book.Bookname }}</span>?</p>
+    <form action="{{ url_for('delete_book_post', id=book.id) }}" method="post">
+    <input type="submit" value="Delete Book">
+</form>
+</body>
+</html>
