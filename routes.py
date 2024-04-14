@@ -15,17 +15,11 @@ def is_admin():
             return True
     return False
 
-@app.route('/')
-def index():
-    if 'user_id' in  session:
-        return redirect(url_for('profile'))
-    else:
-        flash ("Please login first!", "danger")
-        return render_template('login.html')
-
+    
 @app.route('/login')
 def login():
     return render_template('login.html')
+
 
 @app.route('/login', methods=['POST'])
 def login_post():
@@ -48,6 +42,7 @@ def login_post():
     session['user_id']=user.id
     flash ("Logged In Successfully","success")
     return redirect(url_for('profile'))
+
 
 @app.route('/register')
 def register():
@@ -94,6 +89,8 @@ def profile():
     else: 
         flash("Please login first!", "danger")
         return redirect(url_for('login'))
+
+
 @app.route('/profile',methods=["POST"])
 def profile_post():
     username=request.form.get("username")
@@ -103,12 +100,12 @@ def profile_post():
 
     if not  username or not cpassword or not password:
         flash("Missing fields", "warning")
-        return redirect(url_for('profile'))
+        return redirect(url_for('login'))
     
     user=User.query.get(session['user_id'])
     if not check_password_hash (user.passhash,cpassword):
         flash ("Password is incorrect","danger")
-        return redirect(url_for('profile'))
+        return redirect(url_for('login'))
     
     if username != user.username :
         new_username=User.query.filter_by(username=username).first()
@@ -123,12 +120,17 @@ def profile_post():
     flash('Profile updated successfully','success')
     return  redirect(url_for('profile'))
 
+
+
 @app.route('/logout')
 def logout():
     session.pop('user_id', None)       # Removes the 'user_id' key from the session dictionary
     flash("You have been logged out.", "info")
     return redirect(url_for('login'))
  # admin pages
+
+
+
 @app.route('/admin')
 def admin():
     if not is_admin():
@@ -144,6 +146,7 @@ def  add_genre():
         flash('Access denied: You must be an admin to view this page.')
         return redirect(url_for('profile'))
     return  render_template('genre/add.html')
+
 
 @app.route('/genre/add', methods=["POST"])
 def  add_genre_post():
@@ -257,6 +260,7 @@ def  add_book_post():
     title=request.form.get('title')
     price=request.form.get('price')
     author=request.form.get('author')
+    booksnum=request.form.get('booksnum')
     genre_id=request.form.get('genre_id')
     pubdate= request.form.get('pubdate')
     try:
@@ -274,7 +278,7 @@ def  add_book_post():
         flash('Please fill out all fields')
         return redirect(url_for('add_book', genre_id = genre_id))
     
-    book=Book(title=title,price=price,author=author,genre=genre,pubdate=pubdate)
+    book=Book(title=title,price=price,author=author,booksnum=booksnum,genre=genre,pubdate=pubdate)
     db.session.add(book)
     db.session.commit()
     flash ('Book added!','success')
@@ -330,10 +334,72 @@ def delete_book_post(id):
     book = Book.query.get(id)
     if not book:
         flash('Error: Book doesn\'t exists.', 'danger')
-        return redirect(url_for('profile'))
-    db.session.delete(book)
-    db.session.commit()
-    flash('Book successfully deleted.', 'success')
+        return redirect(url_for('admin'))
+    try:
+        db.session.delete(book)
+        db.session.commit()
+        flash('Book successfully deleted.', 'success')
+    except Exception as e:
+        db.session.rollback()
+        flash(f'Error deleting book: {str(e)}', 'danger')
+
     return redirect(url_for('admin'))
+    
+
+#--- user routes
+
+
+@app.route('/')
+def index():
+    # Check if 'user_id' is in the session
+    if 'user_id' in session:
+        user = User.query.get(session['user_id'])
+        if user and user.is_admin:
+            return render_template('admin.html')
+    genres = Genre.query.all()
+    return render_template('searchbar.html', genres=genres)
+    
+    
+@app.route('/add_to_cart/<int:book_id>', methods=['POST'])
+def add_to_cart(book_id):
+    if 'user_id' not in session:
+        flash("You must be logged in to perform this action.")
+        return redirect(url_for('login'))  # Redirect to login page if user is not logged in
+
+    book = Book.query.get(book_id)
+    if not book:
+        flash('Error: Book doesn\'t exist.', 'danger')
+        return redirect(url_for('index'))
+
+    booksnum = request.form.get('booksnum')
+    try:
+        booksnum = int(booksnum)
+    except ValueError:
+        flash('Error: You must enter a number.', 'danger')
+        return redirect(url_for('index'))
+
+    if booksnum <= 0 or booksnum > book.booksnum:
+        flash('Error: You must enter a number greater than 0 and less than or equal to the number of books in stock.', 'danger')
+        return redirect(url_for('index'))
+
+    cart = Cart.query.filter_by(user_id=session['user_id'], book_id=book_id).first()
+    if cart:
+        if cart.booksnum + booksnum > book.booksnum:
+            flash('Error: You must enter a number less than or equal to the number of books in stock.', 'danger')
+            return redirect(url_for('index'))
+        cart.booksnum += booksnum
+    else:
+        cart = Cart(user_id=session['user_id'], book_id=book_id, booksnum=booksnum)
+        db.session.add(cart)
+
+    db.session.commit()
+    flash('Book added to cart.', 'success')
+    return redirect(url_for('index'))
+
+
+        
+
+    
+            
 
 

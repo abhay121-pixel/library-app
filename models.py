@@ -17,13 +17,13 @@ class User(db.Model):
 class Genre(db.Model):
     id=db.Column(db.Integer,primary_key=True)
     genrename=db.Column(db.String(32),unique=True)
-    books=db.relationship('Book',backref='genre' ,lazy='select')#lazy here we use bz when i will acces then give it not everytime
+    books=db.relationship('Book',backref='genre' ,lazy='dynamic',cascade='all,delete-orphan')#lazy here we use bz when i will acces then give it not everytime
      
 class Book(db.Model):
     id=db.Column(db.Integer,primary_key=True)
     title=db.Column(db.String(100),nullable=False)
     author=db.Column(db.String(30))
-    #booksnum=db.Column(db.BigInteger,nullable=False)
+    booksnum=db.Column(db.BigInteger,nullable=True)
     price=db.Column(db.Float,nullable=False)
     genre_id=db.Column(db.Integer,db.ForeignKey("genre.id"),nullable=False)
     #publisher=db.Column(db.String(30))
@@ -36,8 +36,8 @@ class Book(db.Model):
     #label=db.relationship("Label",uselist=False,backref=db.backref("book"))
     #genre=db.Column(db.Integer,db.ForeignKey('genre.id'))
     #user_id=db.Column(db.Integer,db.ForeignKey('user.id'),nullable=False)
-    carts=db.relationship("Cart",backref='book',lazy='dynamic')
-    orders=db.relationship("Order",backref='book',lazy='dynamic')
+    carts=db.relationship("Cart",backref='book',lazy='dynamic',cascade='all,delete-orphan')
+    orders=db.relationship("Order",backref='book',lazy='dynamic',cascade='all,delete-orphan')
     #feedback = db.relationship("Feedback", back_populates="book", overlaps="books_feedback_relationship")
 
 class Feedback(db.Model):
@@ -51,7 +51,8 @@ class Cart(db.Model):
     id=db.Column(db.Integer,primary_key=True)
     user_id=db.Column(db.Integer,db.ForeignKey('user.id'),nullable=False)
     book_id=db.Column(db.Integer,db.ForeignKey('book.id'),nullable=False)
-    quantity=db.Column(db.Integer,nullable=False)
+    #quantity=db.Column(db.Integer,nullable=False)
+    booksnum = db.Column(db.Integer, nullable=False)
 
 class Transaction(db.Model):
     id=db.Column(db.Integer,primary_key=True)

@@ -1,5 +1,7 @@
 from flask import Flask, render_template,session
+from flask_migrate import Migrate
 app=Flask( __name__)
+
 
 
 import config

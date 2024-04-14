@@ -106,7 +106,7 @@
                 <tr>
                     <td>{{ genre.id }}</td>
                     <td>{{ genre.genrename }}</td>
-                    <td>{{genre.name|length}}</td>
+                    <td>{{genre.books.count()}}</td>
                     <td>
                         <a href="{{ url_for('show_genre', id=genre.id) }}"><i class="fas fa-eye"></i>Show</a>
                         <a href="{{ url_for('edit_genre', id=genre.id) }}"><i class="fas fa-pencil-alt"></i>Edit</a>
