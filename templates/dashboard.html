@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <title>User Dashboard</title>
+    <style>
+        body { 
+            padding-top: 65px; 
+            background-color: #f4f4f4; /* Light gray background */
+        }
+        .custom-select {
+            font-size: 1rem; color: #333; background-color: #f8f9fa;
+        }
+        .custom-select option {
+            background-color: white; color: #333;
+        }
+        .custom-select:focus {
+            border-color: #1f2020; outline: 0;
+            box-shadow: 0 0 0 0.2rem rgba(36, 37, 37, 0.25);
+        }
+        .navbar a:hover {
+            background-color: #e21f1f; color: black;
+        }
+        .flex-container {
+            display: flex;
+            justify-content: space-around;
+            align-items: flex-start;
+            flex-wrap: wrap;
+        }
+        .book-list, .approved-books {
+            flex: 1 1 45%; /* Flex basis at 45% allows for some spacing */
+            margin-top: 20px;
+        }
+        table {
+            width: 100%;
+            background-color: white;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.15);
+        }
+        th, td {
+            padding: 10px;
+        }
+        th {
+            background-color: #333;
+            color: white;
+        }
+        .btn-primary {
+            background-color: #007bff;
+            border-color: #007bff;
+        }
+        .btn-primary:hover {
+            background-color: #0056b3;
+            border-color: #004085;
+        }
+        .btn-secondary {
+            background-color: #6c757d;
+            border-color: #6c757d;
+        }
+        .btn-secondary:hover {
+            background-color: #545b62;
+            border-color: #4e555b;
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top">
+        <a class="navbar-brand" href="#">Library App</a>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav">
+                <li class="nav-item active"><a class="nav-link" href="{{ url_for('index') }}">Home</a></li>
+                <li class="nav-item"><a class="nav-link" href="{{ url_for('profile') }}">Profile</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <div class="container">
+        <h1>User Dashboard</h1>
+        <div>
+            <select class="custom-select" onchange="location.href = '/dashboard?genre_id=' + this.value;">
+                <option value="">All Genres</option>
+                {% for genre in genres %}
+                <option value="{{ genre.id }}" {% if selected_genre_id == genre.id %} selected {% endif %}>{{ genre.name }}</option>
+                {% endfor %}
+            </select>
+        </div>
+        <p>Total Books: {{ total_books }}</p>
+        
+        <div class="flex-container">
+            <div class="book-list">
+                <h2>Books List</h2>
+                <ul class="list-group">
+                    {% for book in books %}
+                    <li class="list-group-item">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div><strong>{{ book.title }}</strong> by {{ book.author }} - Genre: {{ book.genre.genrename }}</div>
+                            <div>Price: ${{ book.price }} (Published: {{ book.pubdate.strftime('%Y-%m-%d') }})</div>
+                        </div>
+                        {% if book.id in requested_books_ids %}
+                        <button class="btn btn-secondary btn-sm" disabled>Already Requested</button>
+                        {% else %}
+                        <form action="/request-book" method="post">
+                            <input type="hidden" name="book_id" value="{{ book.id }}">
+                            <button type="submit" class="btn btn-primary btn-sm">Request This Book</button>
+                        </form>
+                        {% endif %}
+                    </li>
+                    {% endfor %}
+                </ul>
+            </div>
+            <div class="approved-books">
+                <h2>Approved Books</h2>
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>Title</th>
+                            <th>Author</th>
+                            <th>Genre</th>
+                            <th>Price</th>
+                            <th>Published Date</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for book in approved_books %}
+                        <tr>
+                            <td>{{ book.title }}</td>
+                            <td>{{ book.author }}</td>
+                            <td>{{ book.genre.genrename }}</td>
+                            <td>${{ book.price }}</td>
+                            <td>{{ book.pubdate.strftime('%Y-%m-%d') }}</td>
+                            <td>
+                                <a href="{{ url_for('read_book', book_id=book.id) }}" class="btn btn-primary btn-sm">Read</a>
+                            </td>
+                        </tr>
+                        {% else %}
+                        <tr><td colspan="5">No approved books available.</td></tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

@@ -5,16 +5,13 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Add Books</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css">
-    <h1 style="text-align: center;">Add a book:</h1>
     <style>
-    
         body {
             margin: 0;
             font-family: Arial, sans-serif;
-            padding-top: 60px; /* Added padding to avoid overlap with the fixed navbar */
-            background-color: #850808;    
+            padding-top: 60px;
+            background-color: #850808;
         }
-
         .navbar {
             background-color: #333;
             overflow: hidden;
@@ -22,7 +19,6 @@
             top: 0;
             width: 100%;
         }
-
         .navbar a {
             float: left;
             display: block;
@@ -31,36 +27,29 @@
             padding: 14px 20px;
             text-decoration: none;
         }
-
         .navbar a:hover {
             background-color: #e21f1f;
             color: black;
         }
-
-        /* Additional styles for the form if needed */
         .form {
             display: flex;
             flex-direction: column;
-            width: 300px; /* Adjust width as needed */
-            margin: 0 auto; /* Center the form in the page */
+            width: 300px;
+            margin: 0 auto;
         }
-
         .form-group {
             margin-bottom: 15px;
         }
-
         .form-label {
             margin-bottom: 5px;
             display: block;
         }
-
         .form-control {
             padding: 10px;
             font-size: 16px;
             width: 100%;
             margin-bottom: 10px;
         }
-
         .btn-success {
             padding: 10px 15px;
             background-color: #1e1f1e;
@@ -69,7 +58,6 @@
             cursor: pointer;
             font-size: 16px;
         }
-
         .btn-success:hover {
             background-color: #218838;
         }
@@ -81,73 +69,44 @@
         <a href="{{ url_for('index') }}">Home</a>
         <a href="{{ url_for('profile') }}">Profile</a>
     </div>
-    {% with messages = get_flashed_messages() %}
-        {% if messages %}
-            <ul class="flashes">
-            {% for message in messages %}
-                <li>{{ message }}</li>
-            {% endfor %}
-            </ul>
-        {% endif %}
-    {% endwith %}
 
+    <h1 style="text-align: center;">Add a book:</h1>
     <form action="{{ url_for('add_book_post')}}" method="post" class="form">
         <div class="form-group">
-            <label for="title" class="form-label">Book Name: </label>
-            <input type="text"
-            name="title"
-            id="title"
-            class="form-control"
-            required>
+            <label for="title" class="form-label">Book Name:</label>
+            <input type="text" name="title" id="title" class="form-control" required>
         </div>
         <div class="form-group">
-            <label for="author" class="form-label">Author Name: </label>
-            <input type="text"
-            name="author"
-            id="author"
-            class="form-control"
-            required>
+            <label for="author" class="form-label">Author Name:</label>
+            <input type="text" name="author" id="author" class="form-control" required>
         </div>
         <div class="form-group">
-            <label for="Price" class="form-label">Price: </label>
-            <input type="number"
-            name="price"
-            id="price"
-            min="1"
-            value="1"
-            class="form-control"
-            required>
+            <label for="content" class="form-label">Content</label>
+            <input type="text" name="content" id="content" class="form-control" required>
         </div>
         <div class="form-group">
-            <label for="booksnum" class="form-label">Stock: </label>
-            <input type="number"
-            name="booksnum"
-            id="booksnum"
-            min="1"
-            value="1"
-            class="form-control"
-            required>
+            <label for="price" class="form-label">Price:</label>
+            <input type="number" name="price" id="price" min="1" value="1" class="form-control" required>
         </div>
-       <div class="form-group">
+        <div class="form-group">
+            <label for="booksnum" class="form-label">Stock:</label>
+            <input type="number" name="booksnum" id="booksnum" min="1" value="1" class="form-control" required>
+        </div>
+        <div class="form-group">
             <label for="genre_id" class="form-label">Genre:</label>
             <select name="genre_id" id="genre_id" class="form-control" required>
                 {% for gen in genres %}
-                {% if gen.id ==genre.id %}
-                    <option selected value="{{ gen.id }}">{{ gen.genrename }}</option>
-                {% else %}
-                    <option value="{{ gen.id }}">{{ gen.genrename }}</option>
-                    {% endif %}
+                <option value="{{ gen.id }}" {% if gen.id == genre.id %} selected {% endif %}>{{ gen.genrename }}</option>
                 {% endfor %}
             </select>
-       </div>
-       <div class="form-group">
-            <label for="pubdate" class="form-label">Published Date: </label>
-            <input type="date"
-            name="pubdate"
-            id="pubdate"
-            class="form-control"
-            required>
-            </div>
+        </div>
+        <div class="form-group">
+            <label for="pubdate" class="form-label">Published Date:</label>
+            <input type="date" name="pubdate" id="pubdate" class="form-control" required>
+        </div>
+        
+        
+        
         <div class="form-group">
             <button type="submit" class="btn btn-success">Add</button>
         </div>

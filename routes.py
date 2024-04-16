@@ -1,7 +1,8 @@
 from flask import render_template, request, url_for, flash, redirect,session
 from app import app  # Assuming your Flask app instance is named 'app'
-from models import db, User,Genre,Cart,Order,Transaction,Book
+from models import db, User,Genre,Cart,Order,Transaction,Book,BookRequest,Feedback
 from werkzeug.security import generate_password_hash, check_password_hash
+from flask_login import LoginManager, current_user, login_user, logout_user, login_required
 from functools import wraps
 from datetime  import datetime
 
@@ -137,7 +138,13 @@ def admin():
         flash("Access denied: You must be an admin to view this page.");
         return redirect(url_for('profile'));
     genres=Genre.query.all()
-    return render_template('admin.html',genres= genres)
+    
+    approved_requests = BookRequest.query.filter(BookRequest.status == 'approved').join(Book).join(User).all()
+    book_requests = BookRequest.query.join(Book).join(User).all()
+    pending_book_requests = BookRequest.query.filter(BookRequest.status == 'pending').join(Book).join(User).all()
+    approved_book_requests = BookRequest.query.filter(BookRequest.status == 'approved').join(Book).join(User).all()
+    return render_template('admin.html', genres=genres, book_requests=pending_book_requests,
+                           approved_requests=approved_book_requests)
 
 
 @app.route('/genre/add')
@@ -262,6 +269,7 @@ def  add_book_post():
     author=request.form.get('author')
     booksnum=request.form.get('booksnum')
     genre_id=request.form.get('genre_id')
+    content = request.form.get('content')
     pubdate= request.form.get('pubdate')
     try:
         price = float(price)  # Convert price to float
@@ -278,12 +286,34 @@ def  add_book_post():
         flash('Please fill out all fields')
         return redirect(url_for('add_book', genre_id = genre_id))
     
-    book=Book(title=title,price=price,author=author,booksnum=booksnum,genre=genre,pubdate=pubdate)
+    book=Book(title=title,price=price,author=author,booksnum=booksnum,genre=genre,pubdate=pubdate,content=content)
     db.session.add(book)
     db.session.commit()
     flash ('Book added!','success')
     return redirect(url_for('admin'))
     #return redirect (url_for('show_genre', genre_id=genre.id))
+
+
+@app.route('/add_feedback', methods=['POST'])
+def add_feedback():
+    book_id = request.form['book_id']
+    comment = request.form['comment']
+    rating = int(request.form['rating'])  # Get the rating as an integer
+
+    # Validate the rating
+    if rating < 1 or rating > 5:
+        flash('Rating must be between 1 and 5.')
+        return redirect(url_for('books'))
+
+    if book_id and comment and rating:
+        feedback = Feedback(book_id=book_id, comment=comment, rating=rating)
+        db.session.add(feedback)
+        db.session.commit()
+        flash('Feedback and rating added successfully.')
+    else:
+        flash('Error adding feedback and rating.')
+    return redirect(url_for('books'))
+
 
 
 
@@ -357,7 +387,11 @@ def index():
         if user and user.is_admin:
             return render_template('admin.html')
     genres = Genre.query.all()
-    return render_template('searchbar.html', genres=genres)
+    parameter=request.args.get('genre')
+    query=request.args.get('query')
+
+    return render_template('index.html', genres=genres)
+
     
     
 @app.route('/add_to_cart/<int:book_id>', methods=['POST'])
@@ -397,9 +431,122 @@ def add_to_cart(book_id):
     return redirect(url_for('index'))
 
 
-        
+@app.route('/dashboard')
+def dashboard():
+    if 'user_id' not in session:
+        flash("You must be logged in to perform this action.")
+        return redirect(url_for('login'))  # Redirect to login page if user is not logged in
+    selected_genre_id = request.args.get('genre_id')
+    if selected_genre_id:
+        books = Book.query.filter_by(genre_id=selected_genre_id).all()
+    else:
+        books = Book.query.all()
+
+    # Fetch books that are associated with approved requests
+    approved_books = Book.query.join(BookRequest).filter(BookRequest.status == 'approved').all()
+
+    genres = Genre.query.all()
+
+    return render_template('dashboard.html', books=books, approved_books=approved_books, genres=genres, selected_genre_id=selected_genre_id)
+
+
+
+@app.route('/request-book', methods=['POST'])
+def request_book():
+    if 'user_id' not in session:
+        flash("You must be logged in to perform this action.")
+        return redirect(url_for('login'))  # Redirect to login page if user is not logged in
+    book_id = request.form.get('book_id')
+    user_id = 1  # Replace with session or authentication mechanism to get the current user's ID
+
+    if book_id is None or user_id is None:
+        flash('Invalid request.')
+        return redirect(url_for('dashboard'))
+
+    new_request = BookRequest(user_id=user_id, book_id=book_id)
+    db.session.add(new_request)
+    db.session.commit()
+    flash('Book request sent successfully!')
+    return redirect(url_for('dashboard'))
+
+
+@app.route('/approve_request/<int:request_id>')
+def approve_request(request_id):
+    if not is_admin():
+        flash("Access denied: You must be an admin to perform this action.")
+        return redirect(url_for('admin'))
+
+    request = BookRequest.query.get_or_404(request_id)
+    request.status = 'approved'  # This line updates the request status to approved
+    db.session.commit()
+    flash('Book request approved.')
+    return redirect(url_for('admin'))
+
+@app.route('/deny_request/<int:request_id>')
+def deny_request(request_id):
+    if not is_admin():
+        flash("Access denied: You must be an admin to perform this action.")
+        return redirect(url_for('admin'))
+
+    request = BookRequest.query.get_or_404(request_id)
+    request.status = 'denied'  # This line updates the request status to denied
+    db.session.commit()
+    flash('Book request denied.')
+    return redirect(url_for('admin'))
+
+
+
+@app.route('/end_access/<int:request_id>')
+def end_access(request_id):
+    if not is_admin():
+        flash("Access denied: You must be an admin to perform this action.")
+        return redirect(url_for('profile'))
+
+    request = BookRequest.query.get_or_404(request_id)
+    request.status = 'access ended'  # Update status or perform other logic
+    db.session.commit()
+    flash('Access for the book request has been ended.')
+    return redirect(url_for('admin'))
 
     
-            
+@app.route('/read_book/<int:book_id>', methods=['GET', 'POST'])
+def read_book(book_id):
+    if 'user_id' not in session:
+        flash("You must be logged in to perform this action.")
+        return redirect(url_for('login'))  # Redirect to login page if user is not logged in
+        
+    book = Book.query.get_or_404(book_id)
+    if request.method == 'POST':
+        try:
+            rating = float(request.form['rating'])
+            book.rating = rating
+            db.session.commit()
+            flash('Thank you for your rating!', 'success')
+        except ValueError:
+            flash('Invalid input for rating. Please enter a valid number.', 'error')
+        return redirect(url_for('read_book', book_id=book_id))
+    
+    return render_template('read_book.html', book=book)
 
 
+@app.route('/view_content', methods=['POST'])
+def view_content():
+    content = request.form.get('content')
+    return render_template('view_content.html', content=content)
+
+
+@app.route('/submit_rating/<int:book_id>', methods=['POST'])
+def submit_rating(book_id):
+    rating = request.form.get('rating')
+    # Assume you have a Book model and you fetch the book instance by id
+    book = Book.query.get_or_404(book_id)
+    book.rating = rating
+    db.session.commit()
+    flash('Thank you for your rating!', 'success')
+    return redirect(url_for('read_book', book_id=book_id))
+
+
+@app.route('/book_details/<int:book_id>')
+def book_details(book_id):
+    book = Book.query.get_or_404(book_id)
+    return render_template('read_book.html', book=book)

@@ -2,6 +2,8 @@ from  app import app
 from flask_sqlalchemy import  SQLAlchemy
 from sqlalchemy.orm import backref
 from  werkzeug.security import generate_password_hash,check_password_hash
+from datetime import datetime
+
 
 
 
@@ -26,27 +28,36 @@ class Book(db.Model):
     booksnum=db.Column(db.BigInteger,nullable=True)
     price=db.Column(db.Float,nullable=False)
     genre_id=db.Column(db.Integer,db.ForeignKey("genre.id"),nullable=False)
-    #publisher=db.Column(db.String(30))
+    content = db.Column(db.Text)  # Book content
+    feedbacks = db.relationship('Feedback', backref='book', lazy=True)
     pubdate=db.Column(db.Date,nullable=False)
-    #feedback=db.relationship("Feedback", backref="books_feedback_relationship",lazy=True)
-    #bookcover=db.Column(db.LargeBinary)
-    #summary=db.Column(db.Text)
-    #pagecount=db.Column(db.Integer)
-    #language=db.Column(db.String(8))
-    #label=db.relationship("Label",uselist=False,backref=db.backref("book"))
     #genre=db.Column(db.Integer,db.ForeignKey('genre.id'))
     #user_id=db.Column(db.Integer,db.ForeignKey('user.id'),nullable=False)
     carts=db.relationship("Cart",backref='book',lazy='dynamic',cascade='all,delete-orphan')
     orders=db.relationship("Order",backref='book',lazy='dynamic',cascade='all,delete-orphan')
     #feedback = db.relationship("Feedback", back_populates="book", overlaps="books_feedback_relationship")
 
+class BookRequest(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
+    book_id = db.Column(db.Integer, db.ForeignKey('book.id'), nullable=False)
+    request_date = db.Column(db.DateTime, default=datetime.utcnow)
+    status = db.Column(db.String(10), default='pending')
+
+    user = db.relationship('User', backref=db.backref('requests', lazy=True))
+    book = db.relationship('Book', backref=db.backref('requests', lazy=True))
+
+
 class Feedback(db.Model):
     id=db.Column(db.Integer,primary_key=True)
     book_id=db.Column(db.Integer,db.ForeignKey('book.id'),nullable=False)
-    text=db.Column(db.Text,nullable=False)
+    comment=db.Column(db.Text,nullable=False)
     rating=db.Column(db.SmallInteger,nullable=False)
-    feed_book=db.relationship("Book",backref='book_feedback_relationship',lazy=True)
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+    #feed_book=db.relationship("Book",backref='book_feedback_relationship',lazy=True)
     #book = db.relationship("Book", back_populates="feedback", overlaps="books_feedback_relationship")
+
+
 class Cart(db.Model):
     id=db.Column(db.Integer,primary_key=True)
     user_id=db.Column(db.Integer,db.ForeignKey('user.id'),nullable=False)
