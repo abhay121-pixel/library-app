@@ -1,6 +1,5 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -11,15 +10,23 @@
             margin: 0;
             font-family: Arial, sans-serif;
             display: flex;
-            background-color: #850808;
+            flex-direction: column;
+            align-items: center;
+            background: url('/static/dashboard.jpg') no-repeat center center fixed;
+            background-size: cover;
+            min-height: 100vh;
+            color: #fff;
+            padding-top: 70px; /* Adjusted to clear fixed navbar */
         }
 
         .navbar {
-            background-color: #333;
+            width: 100%;
+            background-color: rgba(0, 0, 0, 0.8);
             overflow: hidden;
             position: fixed;
             top: 0;
-            width: 100%;
+            padding: 14px 20px;
+            z-index: 1000;
         }
 
         .navbar a {
@@ -29,86 +36,86 @@
             text-align: center;
             padding: 14px 20px;
             text-decoration: none;
+            transition: background-color 0.3s, color 0.3s;
         }
 
-        .navbar a:hover {
-            background-color: #e21f1f;
+        .navbar a:hover, .navbar a.active {
+            background-color: #ea0f0f;
             color: black;
         }
 
         .main-content {
-            margin-top: 70px; /* Adjusted to clear fixed navbar */
-            padding: 50px;
-            width: 100%; /* Full width */
+            width: 90%; /* Full width minus some padding */
+            max-width: 1000px; /* Maximum width */
+            margin: 20px;
+            padding: 20px;
             display: flex;
             flex-direction: column;
             align-items: center;
-            justify-content: start;
         }
 
         table {
             border-collapse: collapse;
-            width: 80%; /* Adjust based on your preference */
-            margin-top: 20px;
+            width: 100%;
+            background-color: rgba(0, 0, 0, 0.8); /* Semi-transparent black for readability */
+            border-radius: 8px;
+            overflow: hidden;
         }
 
         th, td {
             text-align: left;
-            padding: 8px;
-            border-bottom: 1px solid #100f0f;
+            padding: 12px;
+            border-bottom: 1px solid #ddd;
+            color: #fff; /* White text for contrast */
         }
 
         th {
-            background-color: #0b0b0b;
-            color: rgb(244, 235, 235);
+            background-color: #333; /* Darker shade for headers */
         }
 
-        tr:nth-child(even) {
-            background-color: #1a1919; /* Even rows color */
+        tr:hover {
+            background-color: rgba(255, 255, 255, 0.1); /* Light highlight on hover */
         }
 
-        tr:nth-child(odd) {
-            background-color: #da1a1a; /* Odd rows color */
+        .action-links a {
+            color: #fff;
+            background-color: #333;
+            padding: 5px 10px;
+            border-radius: 5px;
+            margin: 0 5px;
+            transition: background-color 0.2s;
         }
 
-        /* Color inside table cells */
-        td {
-            background-color: #d9d9d3; /* Light grey color for table cells */
-            color: #171616; /* Dark grey text color */
+        .action-links a:hover {
+            background-color: #ea0f0f;
+        }
+
+        .fas {
+            margin-right: 5px;
         }
         
-        .btn-danger {
-            color: white;
-            background-color: #dc3545; /* Bootstrap's .btn-danger background color */
-            padding: 5px 10px;
-            text-decoration: none;
-            border-radius: 5px;
-            font-size: 14px;
-        }
-        .btn-danger:hover {
-            background-color: #c82333; /* Darker shade for hover effect */
-        }
         
     </style>
 </head>
-
 <body>
     <div class="navbar">
         <a href="{{ url_for('index') }}">Library App</a>
-        <a href="{{ url_for('admin') }}">Home</a>
+        <a href="{{ url_for('admin') }}" class="active">Dashboard</a>
         <a href="{{ url_for('profile') }}">Profile</a>
+        <a href="{{ url_for('logout') }}">Logout</a>
     </div>
 
     <div class="main-content">
         <h1>Admin Dashboard</h1>
-        <a href="{{ url_for('add_genre') }}" style="border: 2px solid #f3ecec; background-color: #070707; color: white; padding: 10px 24px; text-align: center; text-decoration: none; display: inline-block; font-size: 16px;">+ Add Genre</a>
+        <a href="{{ url_for('add_genre') }}" class="btn">+ Add Genre</a>
+
         <h2>Genres:</h2>
         <table>
             <thead>
                 <tr>
                     <th>Genre ID</th>
                     <th>Genre Name</th>
-                    <th>Number of Books in Genre</th>
+                    <th>Number of Books</th>
                     <th>Actions</th>
                 </tr>
             </thead>
@@ -118,10 +125,10 @@
                     <td>{{ genre.id }}</td>
                     <td>{{ genre.genrename }}</td>
                     <td>{{ genre.books.count() }}</td>
-                    <td>
-                        <a href="{{ url_for('show_genre', id=genre.id) }}"><i class="fas fa-eye"></i>Show</a>
-                        <a href="{{ url_for('edit_genre', id=genre.id) }}"><i class="fas fa-pencil-alt"></i>Edit</a>
-                        <a href="{{ url_for('delete_genre', id=genre.id) }}"><i class="fas fa-times-circle"></i>Delete</i></a>
+                    <td class="action-links">
+                        <a href="{{ url_for('show_genre', id=genre.id) }}"><i class="fas fa-eye"></i> Show</a>
+                        <a href="{{ url_for('edit_genre', id=genre.id) }}"><i class="fas fa-pencil-alt"></i> Edit</a>
+                        <a href="{{ url_for('delete_genre', id=genre.id) }}"><i class="fas fa-times-circle"></i> Delete</a>
                     </td>
                 </tr>
                 {% endfor %}
@@ -129,63 +136,60 @@
         </table>
 
         <h2>Pending Book Requests:</h2>
-<table>
-    <thead>
-        <tr>
-            <th>Request ID</th>
-            <th>User Name</th>
-            <th>Book Title</th>
-            <th>Requested On</th>
-            <th>Actions</th>
-        </tr>
-    </thead>
-    <tbody>
-        {% for request in book_requests %}
-        <tr>
-            <td>{{ request.id }}</td>
-            <td>{{ request.user.username }}</td>
-            <td>{{ request.book.title }}</td>
-            <td>{{ request.request_date.strftime('%Y-%m-%d %H:%M') }}</td>
-            <td>
-                <a href="{{ url_for('approve_request', request_id=request.id) }}"><i class="fas fa-check-circle"></i> Approve</a>
-                <a href="{{ url_for('deny_request', request_id=request.id) }}"><i class="fas fa-times-circle"></i> Deny</a>
-            </td>
-        </tr>
-        {% else %}
-        <tr><td colspan="5">No pending book requests.</td></tr>
-        {% endfor %}
-    </tbody>
-</table>
+        <table>
+            <thead>
+                <tr>
+                    <th>Request ID</th>
+                    <th>User Name</th>
+                    <th>Book Title</th>
+                    <th>Requested On</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for request in book_requests %}
+                <tr>
+                    <td>{{ request.id }}</td>
+                    <td>{{ request.user.username }}</td>
+                    <td>{{ request.book.title }}</td>
+                    <td>{{ request.request_date.strftime('%Y-%m-%d %H:%M') }}</td>
+                    <td class="action-links">
+                        <a href="{{ url_for('approve_request', request_id=request.id) }}"><i class="fas fa-check-circle"></i> Approve</a>
+                        <a href="{{ url_for('deny_request', request_id=request.id) }}"><i class="fas fa-times-circle"></i> Deny</a>
+                    </td>
+                </tr>
+                {% else %}
+                <tr><td colspan="5">No pending book requests.</td></tr>
+                {% endfor %}
+            </tbody>
+        </table>
 
-<h2>Approved Book Requests:</h2>
-<table>
-    <thead>
-        <tr>
-            <th>Request ID</th>
-            <th>User Name</th>
-            <th>Book Title</th>
-        </tr>
-    </thead>
-    <tbody>
-        {% for request in approved_requests %}
-        <tr>
-            <td>{{ request.id }}</td>
-            <td>{{ request.user.username }}</td>
-            <td>{{ request.book.title }}</td>
-            <td>
-                <a href="{{ url_for('end_access', request_id=request.id) }}" class="btn btn-danger">
-                    <i class="fas fa-ban"></i> End Access
-                </a>
-            </td>
-        </tr>
-        {% else %}
-        <tr><td colspan="3">No approved book requests.</td></tr>
-        {% endfor %}
-    </tbody>
-</table>
-
+        <h2>Approved Book Requests:</h2>
+        <table>
+            <thead>
+                <tr>
+                    <th>Request ID</th>
+                    <th>User Name</th>
+                    <th>Book Title</th>
+                    <th>End Access</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for request in approved_requests %}
+                <tr>
+                    <td>{{ request.id }}</td>
+                    <td>{{ request.user.username }}</td>
+                    <td>{{ request.book.title }}</td>
+                    <td class="action-links">
+                        <a href="{{ url_for('end_access', request_id=request.id) }}" class="btn btn-danger"><i class="fas fa-ban"></i> End Access</a>
+                    </td>
+                </tr>
+                {% else %}
+                <tr><td colspan="4">No approved book requests.</td></tr>
+                {% endfor %}
+            </tbody>
+        </table>
 
     </div>
 </body>
-
 </html>

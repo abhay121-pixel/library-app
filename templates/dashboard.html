@@ -80,7 +80,7 @@
             <select class="custom-select" onchange="location.href = '/dashboard?genre_id=' + this.value;">
                 <option value="">All Genres</option>
                 {% for genre in genres %}
-                <option value="{{ genre.id }}" {% if selected_genre_id == genre.id %} selected {% endif %}>{{ genre.name }}</option>
+                <option value="{{ genre.id }}" {% if selected_genre_id == genre.id %} selected {% endif %}>{{ genre.genrename }}</option>
                 {% endfor %}
             </select>
         </div>
