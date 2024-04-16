@@ -114,7 +114,7 @@
                     <li class="list-group-item">
                         <div class="d-flex justify-content-between align-items-center">
                             <div><strong>{{ book.title }}</strong> by {{ book.author }} - Genre: {{ book.genre.genrename }}</div>
-                            <div>Price: ${{ book.price }} (Published: {{ book.pubdate.strftime('%Y-%m-%d') }})</div>
+                            <div>Price:  &#8377;{{ book.price }} (Published: {{ book.pubdate.strftime('%Y-%m-%d') }})</div>
                         </div>
                         {% if book.id in requested_books_ids %}
                         <button class="btn btn-secondary btn-sm" disabled>Already Requested</button>

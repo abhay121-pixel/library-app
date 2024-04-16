@@ -103,15 +103,17 @@
         <h2>Author: {{ book.author }}</h2>
         <h2>Genre: {{ book.genre.genrename }}</h2>
         <div class="content-box">
-            <p>{{ book.content }}</p>
+            {% for paragraph in book.content.split('\n') %}
+                <p>{{ paragraph }}</p>
+            {% endfor %}
         </div>
         <div class="rating-box">
             <form action="{{ url_for('submit_rating', book_id=book.id) }}" method="post" class="rating">
                 <input type="radio" id="star5" name="rating" value="5"><label for="star5" title="5 stars">☆</label>
-                <input type="radio" id="star4" name="rating" value="4"><label for="star4" title="4 stars">☆</label>
+                <input type of="radio" id="star4" name="rating" value="4"><label for="star4" title="4 stars">☆</label>
                 <input type="radio" id="star3" name="rating" value="3"><label for="star3" title="3 stars">☆</label>
-                <input type="radio" id="star2" name="rating" value="2"><label for="star2" title="2 stars">☆</label>
-                <input type="radio" id="star1" name="rating" value="1"><label for="star1" title="1 star">☆</label>
+                <input type="radio" id="star2" name="rating" value="2"><label for "star2" title="2 stars">☆</label>
+                <input type="radio" id="star1" name="rating" value="1"><label for "star1" title="1 star">☆</label>
                 <button type="submit" class="btn btn-primary">Submit Rating</button>
             </form>
         </div>
