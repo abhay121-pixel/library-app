@@ -5,23 +5,26 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Edit Book</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css">
-    <h1 style="text-align: center;">Update Book:</h1>
     <style>
         body {
             margin: 0;
             font-family: Arial, sans-serif;
-            padding-top: 60px; /* Added padding to avoid overlap with the fixed navbar */
-            background-color: #850808;
+            padding-top: 60px;
+            background: url('/static/background.jpg') no-repeat center center fixed;
+            background-size: cover;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            color: #fff;
         }
-
         .navbar {
             background-color: #333;
             overflow: hidden;
             position: fixed;
-            top: 0;
+            top:0;
             width: 100%;
         }
-
         .navbar a {
             float: left;
             display: block;
@@ -30,36 +33,38 @@
             padding: 14px 20px;
             text-decoration: none;
         }
-
         .navbar a:hover {
             background-color: #e21f1f;
-            color: black;
+            color: white;
         }
-
-        /* Additional styles for the form if needed */
         .form {
-            display: flex;
-            flex-direction: column;
-            width: 300px; /* Adjust width as needed */
-            margin: 0 auto; /* Center the form in the page */
+            background-color: rgba(0, 0, 0, 0.8);
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.5);
+            width: 400px;
+            margin-top: 20px;
         }
-
         .form-group {
             margin-bottom: 15px;
         }
-
         .form-label {
             margin-bottom: 5px;
             display: block;
         }
-
-        .form-control {
+        .form-control, .form-control-date, .form-control-textarea {
             padding: 10px;
             font-size: 16px;
             width: 100%;
             margin-bottom: 10px;
+            border-radius: 4px;
+            border: none;
+            background-color: #fff;
+            color: #333;
         }
-
+        .form-control-textarea {
+            height: 100px; /* Larger height for text area */
+        }
         .btn-success {
             padding: 10px 15px;
             background-color: #1e1f1e;
@@ -67,8 +72,8 @@
             border: none;
             cursor: pointer;
             font-size: 16px;
+            transition: background-color 0.3s;
         }
-
         .btn-success:hover {
             background-color: #218838;
         }
@@ -76,15 +81,15 @@
             list-style-type: none;
             margin: 0;
             padding: 0;
-        }
-
-        .flashes li {
-            margin-top: 10px;
-            color: #ff0; /* Change as needed */
-            background-color: #444; /* Dark background for the flash message */
-            padding: 10px;
-            border-radius: 5px; /* Rounded corners for flash messages */
+            width: 100%;
             text-align: center;
+        }
+        .flashes li {
+            color: #ff0; /* Yellow text for visibility */
+            background-color: #444; /* Dark background for contrast */
+            padding: 10px;
+            border-radius: 5px; /* Rounded corners for aesthetics */
+            margin-bottom: 10px; /* Space between messages */
         }
     </style>
 </head>
@@ -93,6 +98,7 @@
         <a href="{{ url_for('index') }}">Library App</a>
         <a href="{{ url_for('index') }}">Home</a>
         <a href="{{ url_for('profile') }}">Profile</a>
+        <a href="{{ url_for('admin') }}">Dashboard</a>
     </div>
     {% with messages = get_flashed_messages() %}
         {% if messages %}
@@ -105,21 +111,26 @@
     {% endwith %}
 
     <form action="{{ url_for('update_book', id=book.id) }}" method="post" class="form">
+        <h1>Update Book:</h1>
         <div class="form-group">
-            <label for="title" class="form-label">Book Name: </label>
+            <label for="title" class="form-label">Book Name:</label>
             <input type="text" name="title" id="title" class="form-control" value="{{ book.title }}" required>
         </div>
         <div class="form-group">
-            <label for="author" class="form-label">Author Name: </label>
+            <label for="author" class="form-label">Author Name:</label>
             <input type="text" name="author" id="author" class="form-control" value="{{ book.author }}" required>
         </div>
         <div class="form-group">
-            <label for="price" class="form-label">Price: </label>
+            <label for="content" class="form-label">Content:</label>
+            <textarea id="content" name="content" class="form-control-textarea" required>{{ book.content }}</textarea>
+        </div>
+        <div class="form-group">
+            <label for="price" class="form-label">Price:</label>
             <input type="number" name="price" id="price" class="form-control" value="{{ book.price }}" required>
         </div>
         <div class="form-group">
-            <label for="pubdate" class="form-label">Published Date: </label>
-            <input type="date" name="pubdate" id="pubdate" class="form-control" value="{{ book.pubdate.strftime('%Y-%m-%d') }}" required>
+            <label for="pubdate" class="form-label">Published Date:</label>
+            <input type="date" name="pubdate" id="pubdate" class="form-control-date" value="{{ book.pubdate.strftime('%Y-%m-%d') }}" required>
         </div>
         <div class="form-group">
             <button type="submit" class="btn btn-success">Update</button>

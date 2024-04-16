@@ -1,6 +1,6 @@
 from flask import render_template, request, url_for, flash, redirect,session
 from app import app  # Assuming your Flask app instance is named 'app'
-from models import db, User,Genre,Cart,Order,Transaction,Book,BookRequest,Feedback
+from models import db, User,Genre,Book,BookRequest,Feedback
 from werkzeug.security import generate_password_hash, check_password_hash
 from flask_login import LoginManager, current_user, login_user, logout_user, login_required
 from functools import wraps
@@ -358,13 +358,10 @@ def delete_book(id):
 @app.route('/book/delete/<int:id>', methods=['POST'])
 def delete_book_post(id):
     if not is_admin():
-        flash("Access denied: You must be an admin to perform this action.")
+        flash("Access denied: You must be an admin to perform this action.", 'danger')
         return redirect(url_for('profile'))
 
-    book = Book.query.get(id)
-    if not book:
-        flash('Error: Book doesn\'t exists.', 'danger')
-        return redirect(url_for('admin'))
+    book = Book.query.get_or_404(id)  # This will automatically return a 404 error page if not found
     try:
         db.session.delete(book)
         db.session.commit()
@@ -374,6 +371,7 @@ def delete_book_post(id):
         flash(f'Error deleting book: {str(e)}', 'danger')
 
     return redirect(url_for('admin'))
+
     
 
 #--- user routes

@@ -4,10 +4,83 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>View Content</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css">
+    <style>
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            padding-top: 60px; /* Adjust if navbar height changes */
+            background: url('/static/background.jpg') no-repeat center center fixed;
+            background-size: cover;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            color: #fff;
+        }
+
+        .navbar {
+            background-color: #333;
+            overflow: hidden;
+            position: fixed;
+            top: 0;
+            width: 100%;
+        }
+
+        .navbar a {
+            float: left;
+            display: block;
+            color: #fff;
+            text-align: center;
+            padding: 14px 20px;
+            text-decoration: none;
+        }
+
+        .navbar a:hover {
+            background-color: #e21f1f;
+            color: white;
+        }
+
+        .content-box {
+            background-color: rgba(0, 0, 0, 0.8);
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.5);
+            width: 80%;
+            margin-top: 20px;
+            text-align: center;
+        }
+
+        .btn {
+            padding: 10px 20px;
+            background-color: #212020;
+            color: white;
+            border: none;
+            text-decoration: none;
+            font-size: 16px;
+            border-radius: 5px;
+            display: inline-block;
+        }
+
+        .btn:hover {
+            background-color: #555;
+        }
+    </style>
 </head>
 <body>
-    <h1>Book Content</h1>
-    <p>{{ content }}</p>
-    <a href="{{ url_for('index') }}">Back to Form</a>
+    <div class="navbar">
+        <a href="{{ url_for('index') }}">Library App</a>
+        <a href="{{ url_for('index') }}">Home</a>
+        <a href="{{ url_for('profile') }}">Profile</a>
+        <a href="{{ url_for('admin') }}">Dashboard</a>
+    </div>
+
+    <div class="content-box">
+        <h1>Book Content</h1>
+        {% for paragraph in content.split('\n') %}
+            <p>{{ paragraph }}</p>
+        {% endfor %}
+        <a href="{{ url_for('admin') }}" class="btn">Back to Dashboard</a>
+    </div>
 </body>
 </html>

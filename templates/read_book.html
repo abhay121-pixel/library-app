@@ -3,53 +3,64 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Read Book</title>
     <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css" rel="stylesheet">
-    <title>Read Book</title>
     <style>
-        body {
-            padding-top: 80px; /* Adjust padding to avoid navbar overlap */
-            background-color: #f4f4f4; /* Light background for the page */
+        body { 
+            padding-top: 80px;
+            background: url('/static/read.jpg') no-repeat center center fixed;
+            background-size: cover;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            color: #fff;
+        }
+        .content-box {
+            background: rgba(0, 0, 0, 0.8);
+            padding: 20px;
+            margin-top: 20px;
+            border-radius: 5px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.3);
+            width: 80%;
+        }
+        h1, h2, p {
+            margin-bottom: 10px;
         }
         .navbar a:hover {
             background-color: #e21f1f;
             color: white;
         }
-        .content-box {
-            background: white;
-            padding: 20px;
-            margin-top: 20px;
-            border: 1px solid #ccc;
-            border-radius: 5px;
-        }
         .rating {
-            direction: rtl; /* Right-to-left direction for correct star filling */
+            direction: rtl;
         }
-        
         .rating > input {
-            display: none; /* Hide radio button */
+            display: none;
         }
-        
         .rating > label {
-            color: #ddd; /* Default light grey stars */
-            float: right; /* Arrange labels from right to left */
-            font-size: 1.5em; /* Larger star size */
+            color: #ddd;
+            float: right;
+            font-size: 2em;
         }
-        
         .rating > label:hover,
         .rating > label:hover ~ label,
         .rating > input:checked + label {
-            color: #FFD700; /* Gold color on hover/checked */
-            cursor: pointer; /* Pointer cursor on hover */
+            color: #FFD700;
+            cursor: pointer;
         }
-        
         .rating > input:checked + label:hover,
         .rating > input:checked ~ label:hover,
         .rating > label:hover ~ input:checked ~ label,
         .rating > input:checked ~ label:hover ~ label {
-            color: #FFED85; /* Lighter gold color on hover after selection */
+            color: #FFED85;
         }
-        
+        .btn-primary, .btn-secondary {
+            margin-top: 10px;
+        }
+        .btn-primary:hover, .btn-secondary:hover {
+            opacity: 0.8;
+        }
     </style>
 </head>
 <body>
@@ -69,6 +80,9 @@
                         <a class="nav-link" href="{{ url_for('profile') }}">Profile</a>
                     </li>
                     <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('dashboard') }}">Dashboard</a>
+                    </li>
+                    <li class="nav-item">
                         <a class="nav-link" href="{{ url_for('logout') }}">Logout</a>
                     </li>
                     {% else %}
@@ -85,20 +99,22 @@
     </nav>
 
     <div class="container content-box">
-        <h1>{{ book.title }} by {{ book.author }}</h1>
+        <h1>Book Name: {{ book.title }}</h1>
+        <h2>Author: {{ book.author }}</h2>
         <h2>Genre: {{ book.genre.genrename }}</h2>
-        <p>{{ book.content }}</p>
-        <form action="{{ url_for('submit_rating', book_id=book.id) }}" method="post">
-            <div class="rating">
-                <input type="radio" id="star5" name="rating" value="5"><label for="star5" title="5 stars"></label>
-                <input type="radio" id="star4" name="rating" value="4"><label for="star4" title="4 stars"></label>
-                <input type="radio" id="star3" name="rating" value="3"><label for="star3" title="3 stars"></label>
-                <input type="radio" id="star2" name="rating" value="2"><label for="star2" title="2 stars"></label>
-                <input type="radio" id="star1" name="rating" value="1"><label for="star1" title="1 star"></label>
-            </div>
-            
-            <button type="submit" class="btn btn-primary">Submit Rating</button>
-        </form>
+        <div class="content-box">
+            <p>{{ book.content }}</p>
+        </div>
+        <div class="rating-box">
+            <form action="{{ url_for('submit_rating', book_id=book.id) }}" method="post" class="rating">
+                <input type="radio" id="star5" name="rating" value="5"><label for="star5" title="5 stars">☆</label>
+                <input type="radio" id="star4" name="rating" value="4"><label for="star4" title="4 stars">☆</label>
+                <input type="radio" id="star3" name="rating" value="3"><label for="star3" title="3 stars">☆</label>
+                <input type="radio" id="star2" name="rating" value="2"><label for="star2" title="2 stars">☆</label>
+                <input type="radio" id="star1" name="rating" value="1"><label for="star1" title="1 star">☆</label>
+                <button type="submit" class="btn btn-primary">Submit Rating</button>
+            </form>
+        </div>
         <a href="{{ url_for('dashboard') }}" class="btn btn-secondary">Back to Dashboard</a>
     </div>
 </body>

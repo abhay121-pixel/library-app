@@ -10,7 +10,13 @@
             margin: 0;
             font-family: Arial, sans-serif;
             padding-top: 60px;
-            background-color: #850808;
+            background: url('/static/background.jpg') no-repeat center center fixed;
+            background-size: cover;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            color: #fff;
         }
         .navbar {
             background-color: #333;
@@ -34,8 +40,12 @@
         .form {
             display: flex;
             flex-direction: column;
-            width: 300px;
-            margin: 0 auto;
+            width: 500px; /* Increased width */
+            background-color: rgba(0, 0, 0, 0.8); /* Semi-transparent background */
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.5);
+            margin-top: 20px;
         }
         .form-group {
             margin-bottom: 15px;
@@ -49,6 +59,10 @@
             font-size: 16px;
             width: 100%;
             margin-bottom: 10px;
+            background-color: #fff;
+            color: #333;
+            border-radius: 4px;
+            border: none;
         }
         .btn-success {
             padding: 10px 15px;
@@ -57,9 +71,13 @@
             border: none;
             cursor: pointer;
             font-size: 16px;
+            transition: background-color 0.3s;
         }
         .btn-success:hover {
             background-color: #218838;
+        }
+        h1 {
+            color: #fff;
         }
     </style>
 </head>
@@ -68,48 +86,48 @@
         <a href="{{ url_for('index') }}">Library App</a>
         <a href="{{ url_for('index') }}">Home</a>
         <a href="{{ url_for('profile') }}">Profile</a>
+        <a href="{{ url_for('admin') }}">Dashboard</a>
     </div>
 
-    <h1 style="text-align: center;">Add a book:</h1>
-    <form action="{{ url_for('add_book_post')}}" method="post" class="form">
-        <div class="form-group">
-            <label for="title" class="form-label">Book Name:</label>
-            <input type="text" name="title" id="title" class="form-control" required>
-        </div>
-        <div class="form-group">
-            <label for="author" class="form-label">Author Name:</label>
-            <input type="text" name="author" id="author" class="form-control" required>
-        </div>
-        <div class="form-group">
-            <label for="content" class="form-label">Content</label>
-            <input type="text" name="content" id="content" class="form-control" required>
-        </div>
-        <div class="form-group">
-            <label for="price" class="form-label">Price:</label>
-            <input type="number" name="price" id="price" min="1" value="1" class="form-control" required>
-        </div>
-        <div class="form-group">
-            <label for="booksnum" class="form-label">Stock:</label>
-            <input type="number" name="booksnum" id="booksnum" min="1" value="1" class="form-control" required>
-        </div>
-        <div class="form-group">
-            <label for="genre_id" class="form-label">Genre:</label>
-            <select name="genre_id" id="genre_id" class="form-control" required>
-                {% for gen in genres %}
-                <option value="{{ gen.id }}" {% if gen.id == genre.id %} selected {% endif %}>{{ gen.genrename }}</option>
-                {% endfor %}
-            </select>
-        </div>
-        <div class="form-group">
-            <label for="pubdate" class="form-label">Published Date:</label>
-            <input type="date" name="pubdate" id="pubdate" class="form-control" required>
-        </div>
-        
-        
-        
-        <div class="form-group">
-            <button type="submit" class="btn btn-success">Add</button>
-        </div>
-    </form>
+    <div class="form">
+        <h1>Add a book:</h1>
+        <form action="{{ url_for('add_book_post') }}" method="post">
+            <div class="form-group">
+                <label for="title" class="form-label">Book Name:</label>
+                <input type="text" name="title" id="title" class="form-control" required>
+            </div>
+            <div class="form-group">
+                <label for="author" class="form-label">Author Name:</label>
+                <input type="text" name="author" id="author" class="form-control" required>
+            </div>
+            <div class="form-group">
+                <label for="content" class="form-label">Content:</label>
+                <textarea name="content" id="content" class="form-control" required></textarea> <!-- Changed to textarea for multi-line content -->
+            </div>
+            <div class="form-group">
+                <label for="price" class="form-label">Price:</label>
+                <input type="number" name="price" id="price" min="1" value="1" class="form-control" required>
+            </div>
+            <div class="form-group">
+                <label for="booksnum" class="form-label">Stock:</label>
+                <input type="number" name="booksnum" id="booksnum" min="1" value="1" class="form-control" required>
+            </div>
+            <div class="form-group">
+                <label for="genre_id" class="form-label">Genre:</label>
+                <select name="genre_id" id="genre_id" class="form-control" required>
+                    {% for gen in genres %}
+                    <option value="{{ gen.id }}" {% if gen.id == genre.id %} selected {% endif %}>{{ gen.genrename }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="pubdate" class="form-label">Published Date:</label>
+                <input type="date" name="pubdate" id="pubdate" class="form-control" required>
+            </div>
+            <div class="form-group">
+                <button type="submit" class="btn btn-success">Add</button>
+            </div>
+        </form>
+    </div>
 </body>
 </html>

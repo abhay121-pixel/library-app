@@ -1,19 +1,22 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Books</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css">
     <style>
-        
-        
         body {
             margin: 0;
             font-family: Arial, sans-serif;
+            background: url('/static/background.jpg') no-repeat center center fixed; /* Consistent background image */
+            background-size: cover;
+            min-height: 100vh;
             display: flex;
-            background-color: #850808;
+            flex-direction: column;
+            align-items: center;
+            padding-top: 60px;
+            color: #fff; /* White text for better readability */
         }
 
         .navbar {
@@ -22,7 +25,6 @@
             position: fixed;
             top: 0;
             width: 100%;
-            
         }
 
         .navbar a {
@@ -36,61 +38,87 @@
 
         .navbar a:hover {
             background-color: #e21f1f;
-            color: black;
+            color: white;
         }
 
         .main-content {
-            margin-left: 100px; /* Same as navbar width */
-            padding: 50px;
-            width: calc(100% - 200px); /* Adjust width based on navbar */
+            width: 80%; /* Adjusted width for alignment */
+            padding: 20px;
             display: flex;
             flex-direction: column;
             align-items: center;
-            justify-content: start;
         }
 
         table {
             border-collapse: collapse;
-            width: 80%; /* Adjust based on your preference */
-            margin-top: 20px;
+            width: 100%;
+            background-color: #333; /* Dark background for table */
+            color: white; /* White text for table */
+            box-shadow: 0 2px 10px rgba(0,0,0,0.5); /* Shadow for depth */
+            border-radius: 8px; /* Rounded corners for table */
+            overflow: hidden; /* Ensures the rounded corners are applied */
         }
 
         th, td {
-            text-align: left;
-            padding: 8px;
-            border-bottom: 1px solid #100f0f;
+            padding: 12px;
+            border-bottom: 1px solid #444; /* Lighter border for rows */
         }
 
         th {
-            background-color: #0b0b0b;
-            color: rgb(244, 235, 235);
-        }
-        tr:nth-child(even) {
-            background-color: #1a1919; /* Even rows color */
+            background-color: #222; /* Darker head cells */
         }
 
-        tr:nth-child(odd) {
-            background-color: #da1a1a; /* Odd rows color */
+        tr:nth-child(even) {
+            background-color: #3a3a3a; /* Slightly lighter for even rows */
         }
-        
-        /* Color inside table cells */
-        td {
-            background-color: #d9d9d3; /* Light grey color for table cells */
-            color: #171616; /* Dark grey text color */
+
+        .btn {
+            padding: 5px 10px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: background-color 0.2s;
+        }
+
+        .btn-info {
+            background-color: #17a2b8;
+        }
+
+        .btn-info:hover {
+            background-color: #138496;
+        }
+
+        .btn-edit {
+            color: #fff;
+            background-color: #ffc107;
+        }
+
+        .btn-edit:hover {
+            background-color: #e0a800;
+        }
+
+        .btn-delete {
+            color: #fff;
+            background-color: #dc3545;
+        }
+
+        .btn-delete:hover {
+            background-color: #c82333;
         }
     </style>
 </head>
-
 <body>
     <div class="navbar">
         <a href="{{ url_for('index') }}">Library App</a>
         <a href="{{ url_for('index') }}">Home</a>
         <a href="{{ url_for('profile') }}">Profile</a>
+        <a href="{{ url_for('admin') }}">Dashboard</a>
     </div>
 
     <div class="main-content">
-        <h1> Books of {{genre.genrename}} Genre</h1>
-        <a href="{{ url_for('add_book',genre_id=genre.id) }}" style="border: 2px solid #f3ecec; background-color: #070707; color: white; padding: 10px 24px; text-align: center; text-decoration: none; display: inline-block; font-size: 16px;">+ Add Books</a>
+        <h1>Books of {{ genre.genrename }} Genre</h1>
+        <a href="{{ url_for('add_book', genre_id=genre.id) }}" style="border: 2px solid #f3ecec; background-color: #070707; color: white; padding: 10px 24px; text-align: center; text-decoration: none; display: inline-block; font-size: 16px;">+ Add Books</a>
         <h2>Books:</h2>
         <table>
             <thead>
@@ -113,8 +141,8 @@
                     <td>${{ '%0.2f'|format(book.price) }}</td>
                     <td>{{ book.pubdate.strftime('%Y-%m-%d') }}</td>
                     <td>
-                        <a href="{{ url_for('edit_book', id=book.id) }}" style="color: blue; margin-right: 10px;"><i class="fas fa-pencil-alt"></i> Update</a>
-                        <a href="{{ url_for('delete_book', id=book.id) }}" style="color: red;" onclick="return confirm('Are you sure you want to delete this book?');"><i class="fas fa-times-circle"></i> Delete</a>
+                        <a href="{{ url_for('edit_book', id=book.id) }}" class="btn btn-edit"><i class="fas fa-pencil-alt"></i> Update</a>
+                        <a href="{{ url_for('delete_book', id=book.id) }}" class="btn btn-delete" onclick="return confirm('Are you sure you want to delete this book?');"><i class="fas fa-times-circle"></i> Delete</a>
                     </td>
                     <td>
                         <!-- Form to submit content for viewing -->
@@ -127,8 +155,6 @@
                 {% endfor %}
             </tbody>
         </table>
-        
     </div>
 </body>
-
 </html>

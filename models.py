@@ -31,21 +31,22 @@ class Book(db.Model):
     content = db.Column(db.Text)  # Book content
     feedbacks = db.relationship('Feedback', backref='book', lazy=True)
     pubdate=db.Column(db.Date,nullable=False)
+    requests = db.relationship("BookRequest", backref='book', lazy='dynamic', cascade='all, delete-orphan')  # Add this line
+    #feedback = db.relationship("Feedback", back_populates="book", overlaps="books_feedback_relationship")
     #genre=db.Column(db.Integer,db.ForeignKey('genre.id'))
     #user_id=db.Column(db.Integer,db.ForeignKey('user.id'),nullable=False)
-    carts=db.relationship("Cart",backref='book',lazy='dynamic',cascade='all,delete-orphan')
-    orders=db.relationship("Order",backref='book',lazy='dynamic',cascade='all,delete-orphan')
-    #feedback = db.relationship("Feedback", back_populates="book", overlaps="books_feedback_relationship")
+    #carts = db.relationship("Cart", backref='book', lazy='dynamic', cascade='all,delete-orphan')
+    #orders = db.relationship("Order", backref='book', lazy='dynamic', cascade='all,delete-orphan')
 
 class BookRequest(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
-    book_id = db.Column(db.Integer, db.ForeignKey('book.id'), nullable=False)
+    book_id = db.Column(db.Integer, db.ForeignKey('book.id', ondelete='CASCADE'), nullable=False)
     request_date = db.Column(db.DateTime, default=datetime.utcnow)
     status = db.Column(db.String(10), default='pending')
 
     user = db.relationship('User', backref=db.backref('requests', lazy=True))
-    book = db.relationship('Book', backref=db.backref('requests', lazy=True))
+    #book = db.relationship('Book', backref=db.backref('requests', lazy=True))
 
 
 class Feedback(db.Model):
@@ -58,25 +59,25 @@ class Feedback(db.Model):
     #book = db.relationship("Book", back_populates="feedback", overlaps="books_feedback_relationship")
 
 
-class Cart(db.Model):
-    id=db.Column(db.Integer,primary_key=True)
-    user_id=db.Column(db.Integer,db.ForeignKey('user.id'),nullable=False)
-    book_id=db.Column(db.Integer,db.ForeignKey('book.id'),nullable=False)
+#class Cart(db.Model):
+    #id=db.Column(db.Integer,primary_key=True)
+    #user_id=db.Column(db.Integer,db.ForeignKey('user.id'),nullable=False)
+    #book_id=db.Column(db.Integer,db.ForeignKey('book.id'),nullable=False)
     #quantity=db.Column(db.Integer,nullable=False)
-    booksnum = db.Column(db.Integer, nullable=False)
+    #booksnum = db.Column(db.Integer, nullable=False)
 
-class Transaction(db.Model):
-    id=db.Column(db.Integer,primary_key=True)
-    user_id=db.Column(db.Integer,db.ForeignKey('user.id'),nullable=False)  
-    datetime=db.Column(db.DateTime,nullable=False)
-    orders=db.relationship("Order",backref="transaction",lazy='dynamic') 
+#class Transaction(db.Model):
+    #id=db.Column(db.Integer,primary_key=True)
+    #user_id=db.Column(db.Integer,db.ForeignKey('user.id'),nullable=False)  
+    #datetime=db.Column(db.DateTime,nullable=False)
+    #orders=db.relationship("Order",backref="transaction",lazy='dynamic') 
 
-class Order(db.Model):
-    id=db.Column(db.Integer,primary_key=True)
-    transaction_id=db.Column(db.Integer,db.ForeignKey('transaction.id'),nullable=False)
-    book_id=db.Column(db.Integer,db.ForeignKey('book.id'),nullable=False)
-    quantity=db.Column(db.Integer,nullable=False)
-    price=db.Column(db.Float,nullable=False)
+#class Order(db.Model):
+    #id=db.Column(db.Integer,primary_key=True)
+    #transaction_id=db.Column(db.Integer,db.ForeignKey('transaction.id'),nullable=False)
+    #book_id=db.Column(db.Integer,db.ForeignKey('book.id'),nullable=False)
+    #quantity=db.Column(db.Integer,nullable=False)
+    #price=db.Column(db.Float,nullable=False)
     #status=db.Column(db.SmallString,nullable=False)#paied/unpaied/shipping/completed
 
     #items = db.relationship('orderItem', backref=backref('order', lazy=True), lazy=True)

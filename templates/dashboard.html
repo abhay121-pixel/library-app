@@ -3,15 +3,22 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
     <title>User Dashboard</title>
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
     <style>
         body { 
             padding-top: 65px; 
-            background-color: #f4f4f4; /* Light gray background */
+            background: url('/static/background.jpg') no-repeat center center fixed;
+            background-size: cover;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            color: #fff; /* White text for better readability */
         }
         .custom-select {
             font-size: 1rem; color: #333; background-color: #f8f9fa;
+            border-radius: 0.25rem; /* Rounded borders */
         }
         .custom-select option {
             background-color: white; color: #333;
@@ -29,38 +36,50 @@
             align-items: flex-start;
             flex-wrap: wrap;
         }
+        .title-box {
+            width: 100%;
+            background-color: rgba(0, 0, 0, 0.8);
+            padding: 10px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.3);
+            text-align: center;
+            border-radius: 5px;
+        }
         .book-list, .approved-books {
             flex: 1 1 45%; /* Flex basis at 45% allows for some spacing */
+            background-color: rgba(19, 19, 19, 0.8); /* Dark semi-transparent background */
+            padding: 20px;
             margin-top: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.15);
         }
         table {
             width: 100%;
-            background-color: white;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.15);
+            background-color: #333; /* Dark background for tables */
+            color: white; /* White text in tables for contrast */
         }
         th, td {
             padding: 10px;
+            border-bottom: 1px solid #555; /* Slightly lighter line for separation */
         }
         th {
-            background-color: #333;
-            color: white;
+            background-color: #222; /* Even darker background for headers */
         }
-        .btn-primary {
-            background-color: #007bff;
-            border-color: #007bff;
+        .btn-primary, .btn-secondary {
+            margin-top: 10px;
         }
-        .btn-primary:hover {
-            background-color: #0056b3;
-            border-color: #004085;
+        .btn-primary:hover, .btn-secondary:hover {
+            opacity: 0.8;
         }
-        .btn-secondary {
-            background-color: #6c757d;
-            border-color: #6c757d;
+        .book-list li {
+            color: #333; /* Dark gray color for list items */
         }
-        .btn-secondary:hover {
-            background-color: #545b62;
-            border-color: #4e555b;
+        
+        .book-list strong {
+            color: #000; /* Black color for titles within the list */
         }
+        
+        
     </style>
 </head>
 <body>
@@ -70,12 +89,14 @@
             <ul class="navbar-nav">
                 <li class="nav-item active"><a class="nav-link" href="{{ url_for('index') }}">Home</a></li>
                 <li class="nav-item"><a class="nav-link" href="{{ url_for('profile') }}">Profile</a></li>
+                <li class="nav-item"><a class="nav-link" href="{{ url_for('logout') }}">Logout</a></li>
             </ul>
         </div>
     </nav>
 
     <div class="container">
-        <h1>User Dashboard</h1>
+        <div class="title-box"><h1>User Dashboard</h1></div>
+        
         <div>
             <select class="custom-select" onchange="location.href = '/dashboard?genre_id=' + this.value;">
                 <option value="">All Genres</option>
@@ -84,11 +105,10 @@
                 {% endfor %}
             </select>
         </div>
-        <p>Total Books: {{ total_books }}</p>
         
         <div class="flex-container">
             <div class="book-list">
-                <h2>Books List</h2>
+                <div class="title-box"><h2>Books List</h2></div>
                 <ul class="list-group">
                     {% for book in books %}
                     <li class="list-group-item">
@@ -109,8 +129,8 @@
                 </ul>
             </div>
             <div class="approved-books">
-                <h2>Approved Books</h2>
-                <table class="table">
+                <div class="title-box"><h2>Approved Books</h2></div>
+                <table class="table table-dark">
                     <thead>
                         <tr>
                             <th>Title</th>
@@ -118,6 +138,7 @@
                             <th>Genre</th>
                             <th>Price</th>
                             <th>Published Date</th>
+                            <th>Action</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -133,7 +154,7 @@
                             </td>
                         </tr>
                         {% else %}
-                        <tr><td colspan="5">No approved books available.</td></tr>
+                        <tr><td colspan="6">No approved books available.</td></tr>
                         {% endfor %}
                     </tbody>
                 </table>

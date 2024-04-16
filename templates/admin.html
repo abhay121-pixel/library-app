@@ -85,6 +85,15 @@
             margin: 0 5px;
             transition: background-color 0.2s;
         }
+        .navbar a.active {
+            background-color: #131212; /* Red background for active state */
+            color: rgb(236, 234, 234); /* Optional: change the text color if needed */
+        }
+        .navbar a:hover {
+            background-color: #ea0f0f; /* Red background on hover */
+            color: black;
+        }
+        
 
         .action-links a:hover {
             background-color: #ea0f0f;
@@ -107,7 +116,8 @@
 
     <div class="main-content">
         <h1>Admin Dashboard</h1>
-        <a href="{{ url_for('add_genre') }}" class="btn">+ Add Genre</a>
+        <a href="{{ url_for('add_genre') }}" style="border: 2px solid #f3ecec; background-color: #070707; color: white; padding: 10px 24px; text-align: center; text-decoration: none; display: inline-block; font-size: 16px;">+ Add Genre</a>
+
 
         <h2>Genres:</h2>
         <table>
