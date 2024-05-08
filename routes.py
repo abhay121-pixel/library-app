@@ -455,7 +455,7 @@ def request_book():
         flash("You must be logged in to perform this action.")
         return redirect(url_for('login'))  # Redirect to login page if user is not logged in
     book_id = request.form.get('book_id')
-    user_id = 1  # Replace with session or authentication mechanism to get the current user's ID
+    user_id = session['user_id'] # Replace with session or authentication mechanism to get the current user's ID
 
     if book_id is None or user_id is None:
         flash('Invalid request.')
@@ -548,3 +548,6 @@ def submit_rating(book_id):
 def book_details(book_id):
     book = Book.query.get_or_404(book_id)
     return render_template('read_book.html', book=book)
+
+
+
